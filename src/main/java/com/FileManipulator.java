@@ -39,7 +39,7 @@ public class FileManipulator{
 	Matcher matcher;
 	boolean valid;
 	Logger logger = Logger.getLogger(FileManipulator.class);
-	WindowGUI gui = new WindowGUI();
+	WindowGUI gui = Initilizer.window;
 	/*
 	 * This method is used to create a folder in the specified path It takes two
 	 * arguments as input. 1. Name in which the folder should be created. 2. Path in

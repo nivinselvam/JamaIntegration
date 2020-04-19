@@ -1,25 +1,20 @@
 package com;
 
-import java.awt.EventQueue;
-
 public class Initilizer {
+	public static WindowGUI window;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		//System.out.println(Thread.currentThread().getName());
-		//EventQueue.invokeLater(new Runnable() {			
-			//public void run() {
-				try {
-					//Thread.currentThread().setName("GUI");
-					WindowGUI window = new WindowGUI();
-					System.out.println(Thread.currentThread().getName());
-					window.frmAttDriver.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			//}
-		//});
+		try {
+			window = new WindowGUI();		
+			window.start();
+			Thread.currentThread().setName("GUIThread");
+			window.join();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

@@ -20,7 +20,7 @@ import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
 
-public class WindowGUI{
+public class WindowGUI extends Thread{
 
 	public JFrame frmAttDriver;
 	public JTextArea txtAreaLogs;
@@ -31,8 +31,13 @@ public class WindowGUI{
 	 * Create the application.
 	 */
 	public WindowGUI() {
+		
+	}
+	@Override
+	public void run() {
 		initialize();
-	}	
+		frmAttDriver.setVisible(true);
+	}
 
 	/**
 	 * Initialize the contents of the frame.
