@@ -24,34 +24,6 @@ public class WebServiceProcessor {
 	public WebServiceProcessor() {
 		
 	}
-	
-	public WebServiceProcessor(String testplan) {
-
-		try {
-			FileManipulator fileManipulator = new FileManipulator();
-			String testplanName, testCycleName, attachmentName;
-			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
-				testplanName = getItemName(testplan);
-				fileManipulator.createFolder(testplanName, path);
-				path = path + testplanName + "\\";
-				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
-					testCycleName = getItemName(currentTestCycle);
-					fileManipulator.createFolder(testCycleName, path);
-					path = path + testCycleName + "\\";
-					for (String currentAttachment : getAttachmentsInTestCase(currentTestCase)) {
-						attachmentName = getItemName(currentAttachment);
-						fileManipulator.createTextFile(getAttachmentContent(currentAttachment),
-								path + attachmentName + ".txt");
-					}
-					path = path.replace(testCycleName + "\\", "");
-				}
-				path = path.replace(testplanName + "\\", "");
-			}
-		} catch (Exception e) {
-			System.out.println("Entered test plan ID is invalid");
-		}
-
-	}
 
 	public static void main(String[] args) {
 	}
@@ -202,11 +174,10 @@ public class WebServiceProcessor {
 				}
 				path = path.replace(testplanName + "\\", "");
 			}
-
+			return consolidatedTestCases;
 		} catch (Exception e) {
-			System.out.println("Entered test plan ID is invalid");
+			return "Unable to get testcase from testplan";
 		}
-		System.out.println(consolidatedTestCases);
-		return consolidatedTestCases;
+		
 	}
 }

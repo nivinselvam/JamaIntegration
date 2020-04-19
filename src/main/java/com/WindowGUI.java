@@ -26,6 +26,9 @@ public class WindowGUI{
 	public JTextArea txtAreaLogs;
 	public JFormattedTextField txtTestPlanID;
 	public Logger logger = Logger.getLogger(WindowGUI.class);
+	FileManipulator fm = new FileManipulator();
+	WebServiceProcessor wsp = new WebServiceProcessor();
+	String consolidatedTestCases, xmlFileCreationStatus;
 
 	/**
 	 * Create the application.
@@ -129,13 +132,22 @@ public class WindowGUI{
 						InetAddress addr = InetAddress.getLocalHost();
 						String filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
 								+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
-						logger.info("System name is "+addr.getHostName().substring(5).toLowerCase());
-						txtAreaLogs.append("\nSystem name is "+addr.getHostName().substring(5).toLowerCase());
-						FileManipulator fm = new FileManipulator();
-						WebServiceProcessor wsp = new WebServiceProcessor();
-						fm.createXMLFile(filePath);
-						fm.addTestCasesTag(filePath);
-						fm.addTestCasesToTestSuite(wsp.getTestcaseFromTestPlan(txtTestPlanID.getText()), filePath);
+						logger.info("xml file will be created in the path "+filePath);
+						txtAreaLogs.append("\nxml file will be created in the path "+filePath);						
+						xmlFileCreationStatus = fm.createXMLFile(filePath);
+						txtAreaLogs.append(xmlFileCreationStatus);
+						if(xmlFileCreationStatus.equals("\nTest suite xml file already exists.\nExisting test suite file was deleted and new file was created.")) {
+							txtAreaLogs.append(fm.addTestCasesTag(filePath));
+						}else {
+							txtAreaLogs.append(xmlFileCreationStatus);
+						}
+						
+						consolidatedTestCases = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
+						if(consolidatedTestCases.equals("Unable to get testcase from testplan")) {
+							txtAreaLogs.append("\nEntered test plan ID is invalid or there is JAMA connectivity issue");
+						}else {
+							txtAreaLogs.append(fm.addTestCasesToTestSuite(consolidatedTestCases, filePath));
+						}						
 
 					} catch (IOException e1) {
 						logger.fatal("Unable to create the xml file");

@@ -1,26 +1,45 @@
-2020-04-13 13:07:44 INFO  WindowGUI:95 - Started processing
-2020-04-13 13:07:44 INFO  WindowGUI:99 - System name obtained is nivins1
-2020-04-13 13:07:48 INFO  WindowGUI:114 - Finished processing
-2020-04-13 13:09:11 INFO  WindowGUI:100 - Started processing
-2020-04-13 13:09:12 INFO  WindowGUI:104 - System name obtained is nivins1
-2020-04-13 13:09:29 INFO  WindowGUI:100 - Started processing
-2020-04-13 13:09:29 INFO  WindowGUI:104 - System name obtained is nivins1
-2020-04-13 13:26:48 INFO  WindowGUI:100 - Started processing
-2020-04-13 13:26:48 INFO  WindowGUI:104 - Finished processing
-2020-04-13 13:28:19 INFO  WindowGUI:100 - Started processing
-2020-04-13 13:28:19 INFO  WindowGUI:109 - Finished processing
-2020-04-13 17:35:16 INFO  WindowGUI:96 - Started processing
-2020-04-13 17:35:16 INFO  WindowGUI:101 - System name obtained is nivins1
-2020-04-13 17:35:45 INFO  WindowGUI:117 - Finished processing
-2020-04-13 17:38:10 INFO  WindowGUI:96 - Started processing
-2020-04-13 17:38:10 INFO  WindowGUI:101 - System name obtained is nivins1
-2020-04-13 17:38:37 INFO  WindowGUI:117 - Finished processing
-2020-04-13 17:43:44 INFO  WindowGUI:96 - Started processing
-2020-04-13 17:43:44 INFO  WindowGUI:103 - System name obtained is nivins1
-2020-04-13 17:44:11 INFO  WindowGUI:116 - Finished processing
-2020-04-13 17:46:21 INFO  WindowGUI:96 - Started processing
-2020-04-13 17:46:21 INFO  WindowGUI:103 - System name is nivins1
-2020-04-13 17:46:46 INFO  WindowGUI:116 - Finished processing
-2020-04-14 16:25:56 INFO  WindowGUI:125 - Started processing
-2020-04-14 16:25:56 INFO  WindowGUI:132 - System name is nivins1
-2020-04-14 16:26:00 INFO  WindowGUI:145 - Finished processing
+2020-04-15 20:13:00 INFO  WindowGUI:127 - Started processing
+2020-04-15 20:13:00 INFO  WindowGUI:134 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-15 20:13:05 INFO  WindowGUI:146 - Finished processing
+2020-04-15 20:16:18 INFO  WindowGUI:127 - Started processing
+2020-04-15 20:16:18 INFO  WindowGUI:134 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-15 20:16:23 INFO  WindowGUI:146 - Finished processing
+2020-04-16 22:12:49 INFO  WindowGUI:128 - Started processing
+2020-04-16 22:12:49 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 22:12:54 INFO  WindowGUI:152 - Finished processing
+2020-04-16 22:14:07 INFO  WindowGUI:128 - Started processing
+2020-04-16 22:14:07 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 22:14:11 INFO  WindowGUI:152 - Finished processing
+2020-04-16 23:09:29 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:09:29 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:09:33 INFO  WindowGUI:156 - Finished processing
+2020-04-16 23:11:25 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:11:25 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:11:30 INFO  WindowGUI:156 - Finished processing
+2020-04-16 23:14:00 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:14:00 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:14:57 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:14:57 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:15:36 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:15:36 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:16:39 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:16:39 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:16:44 INFO  WindowGUI:157 - Finished processing
+2020-04-16 23:17:38 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:17:38 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:17:43 INFO  WindowGUI:157 - Finished processing
+2020-04-16 23:20:22 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:20:22 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:20:26 INFO  WindowGUI:157 - Finished processing
+2020-04-16 23:22:17 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:22:17 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:22:21 INFO  WindowGUI:156 - Finished processing
+2020-04-16 23:26:56 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:26:56 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:27:21 INFO  WindowGUI:156 - Finished processing
+2020-04-16 23:28:36 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:28:36 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:29:48 INFO  WindowGUI:156 - Finished processing
+2020-04-16 23:30:49 INFO  WindowGUI:128 - Started processing
+2020-04-16 23:30:49 INFO  WindowGUI:135 - xml file will be created in the path C:\Users\nivins1\OneDrive - Verifone\Desktop\TestSuite.xml
+2020-04-16 23:31:50 INFO  WindowGUI:156 - Finished processing
