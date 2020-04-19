@@ -20,19 +20,23 @@ import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
 
-public class WindowGUI extends Thread{
+public class WindowGUI extends Thread {
 
 	public JFrame frmAttDriver;
 	public JTextArea txtAreaLogs;
 	public JFormattedTextField txtTestPlanID;
 	public Logger logger = Logger.getLogger(WindowGUI.class);
+	FileManipulator fm = new FileManipulator();
+	WebServiceProcessor wsp = new WebServiceProcessor();
+	String status;
 
 	/**
 	 * Create the application.
 	 */
 	public WindowGUI() {
-		
+
 	}
+
 	@Override
 	public void run() {
 		initialize();
@@ -55,8 +59,7 @@ public class WindowGUI extends Thread{
 
 		JButton btnOk = new JButton("Ok");
 		JScrollPane spLogs = new JScrollPane();
-		 
-		
+
 //		NumberFormat format = NumberFormat.getInstance();
 //		NumberFormatter formatter = new NumberFormatter(format);
 //		formatter.setValueClass(Integer.class);
@@ -66,93 +69,105 @@ public class WindowGUI extends Thread{
 //		// If you want the value to be committed on each keystroke instead of focus lost
 //		formatter.setCommitsOnValidEdit(true);
 		txtTestPlanID = new JFormattedTextField();
-		
-				txtAreaLogs = new JTextArea();
-				txtAreaLogs.setEditable(false);
-				txtAreaLogs.setLineWrap(true);
-		
+
+		txtAreaLogs = new JTextArea();
+		txtAreaLogs.setEditable(false);
+		txtAreaLogs.setLineWrap(true);
+
 		JButton btnClearLogs = new JButton("Clear Logs");
-		
 
 		GroupLayout groupLayout = new GroupLayout(frmAttDriver.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(14)
-							.addComponent(spLogs, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtAreaLogs, GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(12)
-							.addComponent(lblTestPlanId)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-							.addGap(0, 0, Short.MAX_VALUE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(12)
-							.addComponent(lblRuntimeLogs))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(60)
-							.addComponent(btnOk, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-							.addGap(56)
-							.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(40)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblTestPlanId)
-						.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(22)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnOk)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup().addGap(14)
+										.addComponent(spLogs, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addComponent(txtAreaLogs, GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
+								.addGroup(groupLayout.createSequentialGroup().addGap(12).addComponent(lblTestPlanId)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, 130,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(0, 0, Short.MAX_VALUE))
+								.addGroup(groupLayout.createSequentialGroup().addGap(12).addComponent(lblRuntimeLogs))
+								.addGroup(groupLayout.createSequentialGroup().addGap(60)
+										.addComponent(btnOk, GroupLayout.PREFERRED_SIZE, 106,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(56).addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 105,
+												GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap()));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
+				.createSequentialGroup().addGap(40)
+				.addGroup(groupLayout
+						.createParallelGroup(Alignment.BASELINE).addComponent(lblTestPlanId).addComponent(txtTestPlanID,
+								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGap(22)
+				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnOk)
 						.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addComponent(lblRuntimeLogs)
-					.addGap(9)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+				.addGap(18).addComponent(lblRuntimeLogs).addGap(9)
+				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
 						.addComponent(txtAreaLogs, GroupLayout.PREFERRED_SIZE, 301, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-		);
+				.addContainerGap()));
 
 		frmAttDriver.getContentPane().setLayout(groupLayout);
 
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String filePath = "";
 				if (txtTestPlanID.getText().equals("")) {
 					txtAreaLogs.append("\nPlease enter a valid test plan id");
 				} else {
 					logger.info("Started processing");
 					txtAreaLogs.append("\nStarted processing");
-					
+					//Below try catch block will create test suite xml file
 					try {
 						InetAddress addr = InetAddress.getLocalHost();
-						String filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
+						filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
 								+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
-						logger.info("System name is "+addr.getHostName().substring(5).toLowerCase());
-						txtAreaLogs.append("\nSystem name is "+addr.getHostName().substring(5).toLowerCase());
-						FileManipulator fm = new FileManipulator();
-						WebServiceProcessor wsp = new WebServiceProcessor();
-						fm.createXMLFile(filePath);
-						fm.addTestCasesTag(filePath);
-						fm.addTestCasesToTestSuite(wsp.getTestcaseFromTestPlan(txtTestPlanID.getText()), filePath);
+						logger.info("System name is " + addr.getHostName().substring(5).toLowerCase());
+						txtAreaLogs.append("\nSystem name is " + addr.getHostName().substring(5).toLowerCase());
+
+						txtAreaLogs.append(fm.createXMLFile(filePath));
 
 					} catch (IOException e1) {
 						logger.fatal("Unable to create the xml file");
 						txtAreaLogs.append("\nUnable to create the xml file\n");
 					}
-					
+					// This try catch block will add the test case tag to the test suite xml
+					try {
+						status = fm.addTestCasesTag(filePath);
+						if (status.equals("\nTest case tag was added to test suite xml file")) {
+							txtAreaLogs.append(status);
+							status = "Test case tag added";
+						} else {
+							txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
+						}
+					} catch (IOException e1) {
+						txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
+					}
+					// Below code will check if test case tag was added and will proceed to add test
+					// cases
+					if (status.equals("Test case tag added")) {
+						try {
+							status = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
+							if (status.equals("\nEntered test plan ID is invalid, so test suite was not updated")) {
+								txtAreaLogs.append(status);
+							} else {
+								txtAreaLogs.append(fm.addTestCasesToTestSuite(status, filePath));
+							}
+						} catch (IOException e1) {
+							txtAreaLogs.append("\nUnable to add add test cases to the test suite.");
+						}
+					}
+
 					logger.info("Finished processing");
 					txtAreaLogs.append("\nFinished processing");
 				}
 			}
 		});
-		
+
 		btnClearLogs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				txtAreaLogs.setText("");

@@ -34,29 +34,27 @@ public class FileManipulator{
 	BufferedWriter writer;
 	String temp;
 	String textFromFile;
-	String fileNameWithPath = "C:\\Users\\nivins1\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
 	Pattern pattern;
 	Matcher matcher;
 	boolean valid;
 	Logger logger = Logger.getLogger(FileManipulator.class);
-	WindowGUI gui = Initilizer.window;
 	/*
 	 * This method is used to create a folder in the specified path It takes two
 	 * arguments as input. 1. Name in which the folder should be created. 2. Path in
 	 * which folder should be created.
 	 */
-	public void createFolder(String folderName, String path) {
+	public String createFolder(String folderName, String path) {
 		file = new File(path + folderName);
 		if (file.exists()) {
 			logger.warn(folderName + " already exists");
-			gui.txtAreaLogs.append("\n"+folderName + " already exists");
+			return "\n"+folderName + " already exists";
 		} else {
 			if (file.mkdir()) {
 				logger.info("Folder " + folderName + " was created successfully");
-				gui.txtAreaLogs.append(("\nFolder " + folderName + " was created successfully"));
+				return "\nFolder " + folderName + " was created successfully";
 			} else {
 				logger.info("Unable to create folder " + folderName);
-				gui.txtAreaLogs.append("\nUnable to create folder " + folderName);
+				return "\nUnable to create folder " + folderName;
 			}
 		}
 
@@ -68,20 +66,20 @@ public class FileManipulator{
 	 * format i.e., content with which the text file should be created. 2. Path in
 	 * which the text file should be created.
 	 */
-	public void createTextFile(String content, String path) {
+	public String createTextFile(String content, String path) {
 		BufferedWriter bw = null;
 		FileWriter fw = null;
 		try {
 
 			fw = new FileWriter(path);
 			bw = new BufferedWriter(fw);
-
 			bw.write(content);
+			return "\nText file created successfully";
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.fatal("Unable to create the text file");
-			gui.txtAreaLogs.append("\nUnable to create the text file");
+			return "\nUnable to create the text file";
 		} finally {
 			try {
 				if (bw != null)
@@ -100,11 +98,13 @@ public class FileManipulator{
 	 * This method is used to create xml in the specified path. Please note, this
 	 * only creates an empty xml file and will not contain any nodes.
 	 */
-	public void createXMLFile(String fileNameWithPath) {
+	public String createXMLFile(String fileNameWithPath) {
 		file = new File(fileNameWithPath);
 		if (file.exists()) {
 			logger.info("File already exists");
-			gui.txtAreaLogs.append("\nTest suite xml file already exists");
+			file.delete();
+			createXMLFile(fileNameWithPath);
+			return "\nTest suite xml file already existed.\nExisting file was deleted and new test suite created";
 		} else {
 			try {
 				DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -118,19 +118,19 @@ public class FileManipulator{
 				StreamResult streamResult = new StreamResult(file);
 				transformer.transform(domSource, streamResult);
 				logger.info("XML file creation completed");
-				gui.txtAreaLogs.append("\nXML file create successfully");
+				return "\nTest suite XML file created successfully";
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 				logger.info("Error occured while trying to create xml file");
-				gui.txtAreaLogs.append("\nError occured while trying to create xml file");
+				return "\nError occured while trying to create xml file";
 			} catch (TransformerConfigurationException e) {
 				e.printStackTrace();
 				logger.info("Error occured while trying to create xml file");
-				gui.txtAreaLogs.append("\nError occured while trying to create xml file");
+				return "\nError occured while trying to create xml file";
 			} catch (TransformerException e) {
 				e.printStackTrace();
 				logger.info("Error occured while trying to create xml file");
-				gui.txtAreaLogs.append("\nError occured while trying to create xml file");
+				return "\nError occured while trying to create xml file";
 			}
 		}
 	}
@@ -154,12 +154,11 @@ public class FileManipulator{
 			return true;
 		} else {
 			logger.fatal("Unable to check if xml is empty, since the file doesnt exist");
-			gui.txtAreaLogs.append("\nUnable to check if xml is empty, since the file doesnt exist");
 			return true;
 		}
 	}
 
-	public void addTestCasesTag(String fileNameWithPath) throws IOException {
+	public String addTestCasesTag(String fileNameWithPath) throws IOException {
 		file = new File(fileNameWithPath);
 		temp = "";
 		textFromFile = "";
@@ -179,20 +178,19 @@ public class FileManipulator{
 			fileWriter = new FileWriter(fileNameWithPath);
 			writer = new BufferedWriter(fileWriter);
 			writer.write(textFromFile);
-			logger.info("Test case tag was added");
-			gui.txtAreaLogs.append("\nTest case was added");
-
 			bufferedReader.close();
 			writer.close();
 			fileInputStream.close();
 			fileWriter.close();
+			logger.info("Test case tag was added");
+			return "\nTest case tag was added to test suite xml file";		
 		} else {
 			logger.info("Test case tag could not be added");
-			gui.txtAreaLogs.append("\nTest case tag could not be added");
+			return "\nTest case tag could not be added";
 		}
 	}
 
-	public void addTestCasesToTestSuite(String testCaseDetails, String fileNameWithPath) throws IOException {
+	public String addTestCasesToTestSuite(String testCaseDetails, String fileNameWithPath) throws IOException {
 		file = new File(fileNameWithPath);
 		temp = "";
 		textFromFile = "";
@@ -208,16 +206,15 @@ public class FileManipulator{
 			fileWriter = new FileWriter(fileNameWithPath);
 			writer = new BufferedWriter(fileWriter);
 			writer.write(textFromFile);
-			logger.info("Test case(s) updated to the TestSuite");
-			gui.txtAreaLogs.append("\nTest case(s) updated to the TestSuite");
 			bufferedReader.close();
 			writer.close();
 			fileInputStream.close();
 			fileWriter.close();
-
+			logger.info("Test case(s) updated to the TestSuite");
+			return "\nTest case(s) updated to the TestSuite";			
 		} else {
 			logger.info("File does not exist");
-			gui.txtAreaLogs.append("\nFile does not exist");
+			return "\nFile does not exist";
 
 		}
 	}

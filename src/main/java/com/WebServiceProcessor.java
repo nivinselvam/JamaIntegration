@@ -202,11 +202,11 @@ public class WebServiceProcessor {
 				}
 				path = path.replace(testplanName + "\\", "");
 			}
-
+			return consolidatedTestCases;
 		} catch (Exception e) {
-			System.out.println("Entered test plan ID is invalid");
+			return "\nEntered test plan ID is invalid, so test suite was not updated";
 		}
-		System.out.println(consolidatedTestCases);
-		return consolidatedTestCases;
+		
+		
 	}
 }
