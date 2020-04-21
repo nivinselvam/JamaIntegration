@@ -117,9 +117,8 @@ public class WindowGUI extends Thread {
 			public void actionPerformed(ActionEvent e) {				
 				String filePath = "";
 				if (txtTestPlanID.getText().equals("")) {
-					txtAreaLogs.append("\nPlease enter a valid test plan id");
+					txtAreaLogs.append("\nTest plan id field cannot be left blank");
 				} else {
-					logger.info("Started processing");
 					txtAreaLogs.append("\nStarted processing. Please wait...");
 
 					try {

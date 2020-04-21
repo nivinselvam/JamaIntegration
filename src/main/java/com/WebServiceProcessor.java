@@ -18,8 +18,7 @@ public class WebServiceProcessor {
 	String responseString;
 	static ResponseBody body;
 	static Response response;
-	static String testplan = "11182991";
-	static String path = "C:\\Users\\nivins1\\Desktop\\";
+	static String testplan;
 
 	public WebServiceProcessor() {
 
