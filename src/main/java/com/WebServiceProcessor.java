@@ -172,9 +172,9 @@ public class WebServiceProcessor {
 			return consolidatedTestCases;
 		} catch (Exception e) {
 			if (e.toString().contains("java.net.UnknownHostException")) {
-				return "\nUnable to connect to JAMA. Please check connectivity";
+				return Constants.jamaConnectivityIssue;
 			} else {
-				return "\nEntered test plan ID is invalid, so test suite was not updated";
+				return Constants.invalidTestPlanID;
 			}
 
 		}

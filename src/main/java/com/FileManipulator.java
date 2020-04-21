@@ -31,7 +31,7 @@ public class FileManipulator{
 	FileInputStream fileInputStream;
 	FileWriter fileWriter;
 	BufferedReader bufferedReader;
-	BufferedWriter writer;
+	BufferedWriter bufferedWriter;
 	String temp;
 	String textFromFile;
 	Pattern pattern;
@@ -102,9 +102,13 @@ public class FileManipulator{
 		file = new File(fileNameWithPath);
 		if (file.exists()) {
 			logger.info("File already exists");
-			file.delete();
-			createXMLFile(fileNameWithPath);
-			return "\nTest suite xml file already existed.\nExisting file was deleted and new test suite created";
+			if(file.delete()) {
+				createXMLFile(fileNameWithPath);
+				return Constants.deletedExistingTestSuite;
+			}else {
+				return Constants.unableToDeleteTestSuite;
+			}			
+			
 		} else {
 			try {
 				DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -117,20 +121,16 @@ public class FileManipulator{
 				File file = new File(fileNameWithPath);
 				StreamResult streamResult = new StreamResult(file);
 				transformer.transform(domSource, streamResult);
-				logger.info("XML file creation completed");
-				return "\nTest suite XML file created successfully";
+				return Constants.testSuiteCreated;
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
-				logger.info("Error occured while trying to create xml file");
-				return "\nError occured while trying to create xml file";
+				return Constants.unableToCreateTestSuite;
 			} catch (TransformerConfigurationException e) {
-				e.printStackTrace();
-				logger.info("Error occured while trying to create xml file");
-				return "\nError occured while trying to create xml file";
+				e.printStackTrace();				
+				return Constants.unableToCreateTestSuite;
 			} catch (TransformerException e) {
 				e.printStackTrace();
-				logger.info("Error occured while trying to create xml file");
-				return "\nError occured while trying to create xml file";
+				return Constants.unableToCreateTestSuite;
 			}
 		}
 	}
@@ -153,7 +153,6 @@ public class FileManipulator{
 			}
 			return true;
 		} else {
-			logger.fatal("Unable to check if xml is empty, since the file doesnt exist");
 			return true;
 		}
 	}
@@ -176,17 +175,15 @@ public class FileManipulator{
 				}
 			}
 			fileWriter = new FileWriter(fileNameWithPath);
-			writer = new BufferedWriter(fileWriter);
-			writer.write(textFromFile);
+			bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(textFromFile);
 			bufferedReader.close();
-			writer.close();
+			bufferedWriter.close();
 			fileInputStream.close();
 			fileWriter.close();
-			logger.info("Test case tag was added");
-			return "\nTest case tag was added to test suite xml file";		
+			return Constants.testcaseTagAdded;		
 		} else {
-			logger.info("Test case tag could not be added");
-			return "\nTest case tag could not be added";
+			return Constants.testcaseTagNotAdded;
 		}
 	}
 
@@ -204,17 +201,15 @@ public class FileManipulator{
 				}
 			}
 			fileWriter = new FileWriter(fileNameWithPath);
-			writer = new BufferedWriter(fileWriter);
-			writer.write(textFromFile);
+			bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(textFromFile);
 			bufferedReader.close();
-			writer.close();
+			bufferedWriter.close();
 			fileInputStream.close();
 			fileWriter.close();
-			logger.info("Test case(s) updated to the TestSuite");
-			return "\nTest case(s) updated to the TestSuite";			
+			return Constants.testcasesAdded;			
 		} else {
-			logger.info("File does not exist");
-			return "\nFile does not exist";
+			return Constants.fileDoesntExist;
 
 		}
 	}

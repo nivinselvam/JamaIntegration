@@ -32,6 +32,8 @@ public class WindowGUI extends Thread {
 
 	/**
 	 * Create the application.
+	 * 
+	 * @wbp.parser.entryPoint
 	 */
 	public WindowGUI() {
 
@@ -108,64 +110,64 @@ public class WindowGUI extends Thread {
 				.addGap(18).addComponent(lblRuntimeLogs).addGap(9)
 				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
-						.addComponent(txtAreaLogs, GroupLayout.PREFERRED_SIZE, 301, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createSequentialGroup().addGap(4).addComponent(txtAreaLogs,
+								GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)))
 				.addContainerGap()));
 
 		frmAttDriver.getContentPane().setLayout(groupLayout);
 
 		btnOk.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-				String filePath = "";
+			public void actionPerformed(ActionEvent e) {
+				String filePath = "", testCasesResult = "";
+				txtAreaLogs.append(Constants.startProcessText+"\n");
 				if (txtTestPlanID.getText().equals("")) {
-					txtAreaLogs.append("\nTest plan id field cannot be left blank");
+					txtAreaLogs.append(Constants.testPlanIDMandate);
 				} else {
-					txtAreaLogs.append("\nStarted processing. Please wait...");
 
-					try {
-						status = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
-						if (status.equals("\nEntered test plan ID is invalid, so test suite was not updated")
-								|| status.equals("\nUnable to connect to JAMA. Please check connectivity")) {
-							txtAreaLogs.append(status);
-						} else {
-							// Below try catch block will create test suite xml file
-							try {
-								InetAddress addr = InetAddress.getLocalHost();
-								filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
-										+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
-								logger.info("System name is " + addr.getHostName().substring(5).toLowerCase());
-								//txtAreaLogs.append("\nSystem name is " + addr.getHostName().substring(5).toLowerCase());
-								txtAreaLogs.append(fm.createXMLFile(filePath));
+					testCasesResult = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
+					if (testCasesResult.equals(Constants.invalidTestPlanID)
+							|| testCasesResult.equals(Constants.jamaConnectivityIssue)) {
+						txtAreaLogs.append(testCasesResult);
+					} else {
+						// Below try catch block will create test suite xml file
+						try {
+							InetAddress addr = InetAddress.getLocalHost();
+							filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
+									+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
+							// logger.info("System name is " +
+							// addr.getHostName().substring(5).toLowerCase());
+							// txtAreaLogs.append("\nSystem name is " +
+							// addr.getHostName().substring(5).toLowerCase());
+							status = fm.createXMLFile(filePath);
+							if (status.equals(Constants.unableToDeleteTestSuite)) {
+								txtAreaLogs.append(status);
+							} else {
+								txtAreaLogs.append(status);
+								// This try catch block will add the test case tag to the test suite xml
+								try {
+									status = fm.addTestCasesTag(filePath);
+									if (status.equals(Constants.testcaseTagAdded)) {
+										txtAreaLogs.append(status);
+										try {
+											txtAreaLogs.append(fm.addTestCasesToTestSuite(testCasesResult, filePath));
+										} catch (IOException e1) {
+											txtAreaLogs.append(Constants.unableToAddTestcase);
+										}
 
-							} catch (IOException e1) {
-								logger.fatal("Unable to create the xml file");
-								txtAreaLogs.append("\nUnable to create the xml file\n");
-							}
-							// This try catch block will add the test case tag to the test suite xml
-							try {
-								status = fm.addTestCasesTag(filePath);
-								if (status.equals("\nTest case tag was added to test suite xml file")) {
-									txtAreaLogs.append(status);
-									status = "Test case tag added";
-								} else {
-									txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
+									} else {
+										txtAreaLogs.append(Constants.testcaseTagNotAdded);
+									}
+								} catch (IOException e1) {
+									txtAreaLogs.append(Constants.testcaseTagNotAdded);
 								}
-							} catch (IOException e1) {
-								txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
-							}
-							// Below code will check if test case tag was added and will proceed to add test
-							// cases
-							if (status.equals("Test case tag added")) {
-								txtAreaLogs.append(fm.addTestCasesToTestSuite(status, filePath));
 							}
 
+						} catch (IOException e1) {
+							txtAreaLogs.append(Constants.unableToCreateTestSuite);
 						}
-					} catch (IOException e1) {
-						txtAreaLogs.append("\nUnable to add add test cases to the test suite.");
 					}
-
-					logger.info("Finished processing");
-					txtAreaLogs.append("\nFinished processing");
 				}
+				txtAreaLogs.append("\n"+Constants.endOfProcessText);
 			}
 		});
 
