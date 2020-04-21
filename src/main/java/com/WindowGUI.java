@@ -114,52 +114,54 @@ public class WindowGUI extends Thread {
 		frmAttDriver.getContentPane().setLayout(groupLayout);
 
 		btnOk.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {				
 				String filePath = "";
 				if (txtTestPlanID.getText().equals("")) {
 					txtAreaLogs.append("\nPlease enter a valid test plan id");
 				} else {
 					logger.info("Started processing");
-					txtAreaLogs.append("\nStarted processing");
-					//Below try catch block will create test suite xml file
-					try {
-						InetAddress addr = InetAddress.getLocalHost();
-						filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
-								+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
-						logger.info("System name is " + addr.getHostName().substring(5).toLowerCase());
-						txtAreaLogs.append("\nSystem name is " + addr.getHostName().substring(5).toLowerCase());
+					txtAreaLogs.append("\nStarted processing. Please wait...");
 
-						txtAreaLogs.append(fm.createXMLFile(filePath));
-
-					} catch (IOException e1) {
-						logger.fatal("Unable to create the xml file");
-						txtAreaLogs.append("\nUnable to create the xml file\n");
-					}
-					// This try catch block will add the test case tag to the test suite xml
 					try {
-						status = fm.addTestCasesTag(filePath);
-						if (status.equals("\nTest case tag was added to test suite xml file")) {
+						status = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
+						if (status.equals("\nEntered test plan ID is invalid, so test suite was not updated")
+								|| status.equals("\nUnable to connect to JAMA. Please check connectivity")) {
 							txtAreaLogs.append(status);
-							status = "Test case tag added";
 						} else {
-							txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
-						}
-					} catch (IOException e1) {
-						txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
-					}
-					// Below code will check if test case tag was added and will proceed to add test
-					// cases
-					if (status.equals("Test case tag added")) {
-						try {
-							status = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
-							if (status.equals("\nEntered test plan ID is invalid, so test suite was not updated")) {
-								txtAreaLogs.append(status);
-							} else {
+							// Below try catch block will create test suite xml file
+							try {
+								InetAddress addr = InetAddress.getLocalHost();
+								filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
+										+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
+								logger.info("System name is " + addr.getHostName().substring(5).toLowerCase());
+								//txtAreaLogs.append("\nSystem name is " + addr.getHostName().substring(5).toLowerCase());
+								txtAreaLogs.append(fm.createXMLFile(filePath));
+
+							} catch (IOException e1) {
+								logger.fatal("Unable to create the xml file");
+								txtAreaLogs.append("\nUnable to create the xml file\n");
+							}
+							// This try catch block will add the test case tag to the test suite xml
+							try {
+								status = fm.addTestCasesTag(filePath);
+								if (status.equals("\nTest case tag was added to test suite xml file")) {
+									txtAreaLogs.append(status);
+									status = "Test case tag added";
+								} else {
+									txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
+								}
+							} catch (IOException e1) {
+								txtAreaLogs.append("\nUnable to add test cases tag to the test suite xml file");
+							}
+							// Below code will check if test case tag was added and will proceed to add test
+							// cases
+							if (status.equals("Test case tag added")) {
 								txtAreaLogs.append(fm.addTestCasesToTestSuite(status, filePath));
 							}
-						} catch (IOException e1) {
-							txtAreaLogs.append("\nUnable to add add test cases to the test suite.");
+
 						}
+					} catch (IOException e1) {
+						txtAreaLogs.append("\nUnable to add add test cases to the test suite.");
 					}
 
 					logger.info("Finished processing");

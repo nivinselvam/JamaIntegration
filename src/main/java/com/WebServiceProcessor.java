@@ -22,38 +22,7 @@ public class WebServiceProcessor {
 	static String path = "C:\\Users\\nivins1\\Desktop\\";
 
 	public WebServiceProcessor() {
-		
-	}
-	
-	public WebServiceProcessor(String testplan) {
 
-		try {
-			FileManipulator fileManipulator = new FileManipulator();
-			String testplanName, testCycleName, attachmentName;
-			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
-				testplanName = getItemName(testplan);
-				fileManipulator.createFolder(testplanName, path);
-				path = path + testplanName + "\\";
-				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
-					testCycleName = getItemName(currentTestCycle);
-					fileManipulator.createFolder(testCycleName, path);
-					path = path + testCycleName + "\\";
-					for (String currentAttachment : getAttachmentsInTestCase(currentTestCase)) {
-						attachmentName = getItemName(currentAttachment);
-						fileManipulator.createTextFile(getAttachmentContent(currentAttachment),
-								path + attachmentName + ".txt");
-					}
-					path = path.replace(testCycleName + "\\", "");
-				}
-				path = path.replace(testplanName + "\\", "");
-			}
-		} catch (Exception e) {
-			System.out.println("Entered test plan ID is invalid");
-		}
-
-	}
-
-	public static void main(String[] args) {
 	}
 
 	public void putData() throws ParseException {
@@ -188,7 +157,6 @@ public class WebServiceProcessor {
 	public String getTestcaseFromTestPlan(String testplan) {
 		String testplanName, testCycleName, attachmentName, consolidatedTestCases = "";
 		try {
-			FileManipulator fileManipulator = new FileManipulator();
 			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
 				testplanName = getItemName(testplan);
 				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
@@ -198,15 +166,19 @@ public class WebServiceProcessor {
 						consolidatedTestCases = consolidatedTestCases + "\n\n"
 								+ getAttachmentContent(currentAttachment);
 					}
-					path = path.replace(testCycleName + "\\", "");
+					
 				}
-				path = path.replace(testplanName + "\\", "");
+				
 			}
 			return consolidatedTestCases;
 		} catch (Exception e) {
-			return "\nEntered test plan ID is invalid, so test suite was not updated";
+			if (e.toString().contains("java.net.UnknownHostException")) {
+				return "\nUnable to connect to JAMA. Please check connectivity";
+			} else {
+				return "\nEntered test plan ID is invalid, so test suite was not updated";
+			}
+
 		}
-		
-		
+
 	}
 }
