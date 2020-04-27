@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +26,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.testng.log4testng.Logger;
 import org.w3c.dom.Document;
 
-public class FileManipulator{
+public class FileManipulator {
 
 	File file;
 	FileInputStream fileInputStream;
@@ -37,6 +38,7 @@ public class FileManipulator{
 	Pattern pattern;
 	Matcher matcher;
 	boolean valid;
+
 	/*
 	 * This method is used to create a folder in the specified path It takes two
 	 * arguments as input. 1. Name in which the folder should be created. 2. Path in
@@ -93,16 +95,25 @@ public class FileManipulator{
 	 * This method is used to create xml in the specified path. Please note, this
 	 * only creates an empty xml file and will not contain any nodes.
 	 */
-	public String createXMLFile(String fileNameWithPath) {
+	public String createXMLFile(String fileNameWithPath) throws IOException {
+		String firstLine = "";
 		file = new File(fileNameWithPath);
 		if (file.exists()) {
-			if(file.delete()) {
-				createXMLFile(fileNameWithPath);
-				return Constants.deletedExistingTestSuite;
-			}else {
-				return Constants.unableToDeleteTestSuite;
-			}			
-			
+			fileInputStream = new FileInputStream(fileNameWithPath);
+			bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+			temp = bufferedReader.readLine();
+			if (temp.contains("<testcases>")) {
+				int endPos = temp.indexOf("<testcases>");
+				firstLine = temp.substring(0, endPos);
+			}
+			PrintWriter writer = new PrintWriter(fileNameWithPath);
+			writer.print("");
+			writer.print(firstLine);
+			fileInputStream.close();
+			bufferedReader.close();
+			writer.close();
+			return Constants.deletedExistingTestSuite;
+
 		} else {
 			try {
 				DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
@@ -120,7 +131,7 @@ public class FileManipulator{
 				e.printStackTrace();
 				return Constants.unableToCreateTestSuite;
 			} catch (TransformerConfigurationException e) {
-				e.printStackTrace();				
+				e.printStackTrace();
 				return Constants.unableToCreateTestSuite;
 			} catch (TransformerException e) {
 				e.printStackTrace();
@@ -175,7 +186,7 @@ public class FileManipulator{
 			bufferedWriter.close();
 			fileInputStream.close();
 			fileWriter.close();
-			return Constants.testcaseTagAdded;		
+			return Constants.testcaseTagAdded;
 		} else {
 			return Constants.testcaseTagNotAdded;
 		}
@@ -201,7 +212,7 @@ public class FileManipulator{
 			bufferedWriter.close();
 			fileInputStream.close();
 			fileWriter.close();
-			return Constants.testcasesAdded;			
+			return Constants.testcasesAdded;
 		} else {
 			return Constants.fileDoesntExist;
 

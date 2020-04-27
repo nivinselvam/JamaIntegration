@@ -17,13 +17,19 @@ public class WebServiceProcessor {
 			+ "@jama.verifone.com/contour/rest/latest/";
 	String request = "/testruns/11183131";
 	String responseString;
-	static ResponseBody body;
-	static Response response;
-	static String testplan;
+	ResponseBody body;
+	Response response;
+	String testplan;
+	int testCaseCount = 0;
+	
 	
 
 	public WebServiceProcessor() {
 
+	}
+	
+	public int getTestcaseCount() {
+		return testCaseCount;
 	}
 
 	public void putData() throws ParseException {
@@ -40,7 +46,7 @@ public class WebServiceProcessor {
 	 * This takes test plan id as input argument and returns the list of test cycles
 	 * as String array
 	 */
-	public static String[] getTestCyclesFromTestPlan(String testPlanID) {
+	public String[] getTestCyclesFromTestPlan(String testPlanID) {
 		int positionOfResultCount, testCycleCount, i = 0;
 		response = RestAssured.get(baseURL + "testplans/" + testPlanID + "/testcycles");
 		body = response.getBody();
@@ -63,8 +69,8 @@ public class WebServiceProcessor {
 	 * This takes test cycle id as input argument and returns the list of test cases
 	 * as String array
 	 */
-	public static String[] getTestCasesFromTestCycle(String testCycleID) {
-		int positionOfResultCount, testCaseCount, i = 0;
+	public String[] getTestCasesFromTestCycle(String testCycleID) {
+		int positionOfResultCount, i = 0;
 		response = RestAssured.get(baseURL + "testcycles/" + testCycleID + "/testruns");
 		body = response.getBody();
 		positionOfResultCount = body.asString().indexOf("\"totalResults\":");
@@ -87,7 +93,7 @@ public class WebServiceProcessor {
 	 * the list of attachment ids as String array Please note, this will only return
 	 * the attachment ids and not the contents of the attachment
 	 */
-	public static String[] getAttachmentsInTestCase(String testCaseID) {
+	public String[] getAttachmentsInTestCase(String testCaseID) {
 		int positionOfResultCount, attachmentsCount, i = 0;
 		response = RestAssured.get(baseURL + "items/" + testCaseID + "/attachments");
 		body = response.getBody();
@@ -111,11 +117,10 @@ public class WebServiceProcessor {
 	 * Please note, this method supports only text files since this is done for PATS
 	 * tool. Support for other tools would be added as enhancement based on demand.
 	 */
-	public static String getAttachmentContent(String attachmentID) {
+	public String getAttachmentContent(String attachmentID) {
 		response = RestAssured.get(baseURL + "attachments/" + attachmentID + "/file");
 		body = response.getBody();
 		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Content of attachment: " + attachmentID);
-		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"-----------------------------------------------------------------------------------");
 		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+body.asString());
 		return body.asString();
 	}
@@ -124,7 +129,7 @@ public class WebServiceProcessor {
 	 * This method is used to retrieve name of a JAMA item. This takes the item ID
 	 * as input argument and returns the name of the item in string format.
 	 */
-	public static String getItemName(String itemID) {
+	public String getItemName(String itemID) {
 		String name = "";
 		response = RestAssured.get(baseURL + "abstractitems/" + itemID);
 		body = response.getBody();
@@ -138,7 +143,7 @@ public class WebServiceProcessor {
 		return name;
 	}
 
-	public static String getAttachmentFileName(String itemID) {
+	public String getAttachmentFileName(String itemID) {
 		String name = "";
 		response = RestAssured.get(baseURL + "abstractitems/" + itemID);
 		body = response.getBody();

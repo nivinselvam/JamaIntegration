@@ -9,7 +9,7 @@ public final class Constants {
 	public final static String username = "nivins1";
 	public final static String password = "Mypassw0rdis1";
 	
-	public final static SimpleDateFormat logsDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss ");
+	public final static SimpleDateFormat logsDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss   ");
 	public final static Date date = new Date();	
 	
 	/*
@@ -17,9 +17,9 @@ public final class Constants {
 	 * \n is added to all the texts to make sure the line is printed in new line
 	 */
 	public final static String startProcessText = "Started processing. Please wait...";
-	public final static String endOfProcessText = "Finished processing\n---------------------------------------------------------------------------------";
-	public final static String testPlanIDMandate = "Test plan id field cannot be left blank";
-	public final static String invalidTestPlanID = "Entered test plan ID is invalid, so test suite was not updated";
+	public final static String endOfProcessText = "Finished processing\n----------------------------------------------------------------------------------------------";
+	public final static String testPlanIDMandate = "Test plan id field should not be left blank";
+	public final static String invalidTestPlanID = "Entered test plan ID is invalid";
 	public final static String jamaConnectivityIssue = "Unable to connect to JAMA. Please check connectivity";
 	public final static String deletedExistingTestSuite = "Test suite xml file already existed. Existing file was deleted and new test suite created";
 	public final static String unableToDeleteTestSuite = "Unable to delete the existing test suite xml file. Please delete the file manually and retry";
