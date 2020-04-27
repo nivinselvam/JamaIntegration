@@ -30,4 +30,5 @@ public final class Constants {
 	public final static String testSuiteCreated= "Test suite XML file created successfully";
 	public final static String testcasesAdded = "Test case(s) updated to the TestSuite";
 	public final static String fileDoesntExist = "File does not exist";
+	public final static String webservicesError = "Something went wrong while fetching the test cases from JAMA.";
 }

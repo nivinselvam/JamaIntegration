@@ -19,17 +19,12 @@ public class WebServiceProcessor {
 	String responseString;
 	ResponseBody body;
 	Response response;
-	String testplan;
-	int testCaseCount = 0;
-	
-	
+	String testplan, status;
+	Pattern pattern;
+	Matcher match;
 
 	public WebServiceProcessor() {
 
-	}
-	
-	public int getTestcaseCount() {
-		return testCaseCount;
 	}
 
 	public void putData() throws ParseException {
@@ -38,7 +33,8 @@ public class WebServiceProcessor {
 		requestSpecification.header("Content-Type", "application/json");
 		requestSpecification.body(responseString);
 		response = requestSpecification.put(request);
-		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+response.getStatusCode());
+		System.out
+				.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + response.getStatusCode());
 	}
 
 	/*
@@ -47,21 +43,29 @@ public class WebServiceProcessor {
 	 * as String array
 	 */
 	public String[] getTestCyclesFromTestPlan(String testPlanID) {
-		int positionOfResultCount, testCycleCount, i = 0;
+		int positionOfResultCount, testCycleCount = 0, i = 0;
 		response = RestAssured.get(baseURL + "testplans/" + testPlanID + "/testcycles");
 		body = response.getBody();
-		positionOfResultCount = body.asString().indexOf("\"totalResults\":");
-		testCycleCount = Integer
-				.parseInt(body.asString().substring(positionOfResultCount + 15, positionOfResultCount + 16));
+		pattern = Pattern.compile("\"totalResults\":\\d{1,}");
+		match = pattern.matcher(body.asString());
+		if (match.find()) {
+			testCycleCount = Integer.parseInt(match.group().substring(15));
+		}
 		String[] testCycleIDs = new String[testCycleCount];
-		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Test cycles in the test plan " + testPlanID + ": " + testCycleCount);
-		Pattern pattern = Pattern.compile("\"id\":\\w*");
-		Matcher match = pattern.matcher(body.asString());
+		pattern = Pattern.compile("\"id\":\\w*");
+		match = pattern.matcher(body.asString());
 		while (match.find()) {
 			testCycleIDs[i] = match.group().substring(5);
 			i++;
 		}
-		return testCycleIDs;
+		if (testCycleCount == 0) {
+			return null;
+		} else {
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+					+ "Test cycles in the test plan " + testPlanID + ": " + testCycleCount);
+			return testCycleIDs;
+		}
+
 	}
 
 	/*
@@ -70,21 +74,30 @@ public class WebServiceProcessor {
 	 * as String array
 	 */
 	public String[] getTestCasesFromTestCycle(String testCycleID) {
-		int positionOfResultCount, i = 0;
+		int positionOfResultCount, testCaseCount = 0, i = 0;
 		response = RestAssured.get(baseURL + "testcycles/" + testCycleID + "/testruns");
 		body = response.getBody();
-		positionOfResultCount = body.asString().indexOf("\"totalResults\":");
-		testCaseCount = Integer
-				.parseInt(body.asString().substring(positionOfResultCount + 15, positionOfResultCount + 16));
-		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Test cases assigned to test Cycle " + testCycleID + ": " + testCaseCount);
+		pattern = Pattern.compile("\"totalResults\":\\d{1,}");
+		match = pattern.matcher(body.asString());
+		if (match.find()) {
+			testCaseCount = Integer.parseInt(match.group().substring(15));
+		}
+		Initilizer.GUI.lblAvailableTcValue.setText(String.valueOf(testCaseCount));		
 		String[] testCaseIDs = new String[testCaseCount];
-		Pattern pattern = Pattern.compile("\"testCase\":\\w*");
-		Matcher match = pattern.matcher(body.asString());
+		pattern = Pattern.compile("\"testCase\":\\w*");
+		match = pattern.matcher(body.asString());
 		while (match.find()) {
 			testCaseIDs[i] = match.group().substring(11);
 			i++;
 		}
-		return testCaseIDs;
+		if(testCaseCount ==0) {
+			return null;
+		}else {
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+					+ "Test cases assigned to test Cycle " + testCycleID + ": " + testCaseCount);
+			return testCaseIDs;
+		}
+		
 	}
 
 	/*
@@ -94,13 +107,14 @@ public class WebServiceProcessor {
 	 * the attachment ids and not the contents of the attachment
 	 */
 	public String[] getAttachmentsInTestCase(String testCaseID) {
-		int positionOfResultCount, attachmentsCount, i = 0;
+		int positionOfResultCount, attachmentsCount = 0, i = 0;
 		response = RestAssured.get(baseURL + "items/" + testCaseID + "/attachments");
 		body = response.getBody();
-		positionOfResultCount = body.asString().indexOf("\"totalResults\":");
-		attachmentsCount = Integer
-				.parseInt(body.asString().substring(positionOfResultCount + 15, positionOfResultCount + 16));
-		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Count of attachments in test case " + testCaseID + ": " + attachmentsCount);
+		pattern = Pattern.compile("\"totalResults\":\\d{1,}");
+		match = pattern.matcher(body.asString());
+		if (match.find()) {
+			attachmentsCount = Integer.parseInt(match.group().substring(15));
+		}		
 		String[] attachmentIDs = new String[attachmentsCount];
 		Pattern pattern = Pattern.compile("\"id\":\\w*");
 		Matcher match = pattern.matcher(body.asString());
@@ -108,7 +122,14 @@ public class WebServiceProcessor {
 			attachmentIDs[i] = match.group().substring(5);
 			i++;
 		}
-		return attachmentIDs;
+		if(attachmentsCount==0) {
+			return null;
+		}else {
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+					+ "Count of attachments in test case " + testCaseID + ": " + attachmentsCount);
+			return attachmentIDs;
+		}
+		
 	}
 
 	/*
@@ -120,8 +141,9 @@ public class WebServiceProcessor {
 	public String getAttachmentContent(String attachmentID) {
 		response = RestAssured.get(baseURL + "attachments/" + attachmentID + "/file");
 		body = response.getBody();
-		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Content of attachment: " + attachmentID);
-		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+body.asString());
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + "Content of attachment: "
+				+ attachmentID);
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + body.asString());
 		return body.asString();
 	}
 
@@ -138,7 +160,8 @@ public class WebServiceProcessor {
 		if (match.find()) {
 			name = match.group().substring(8);
 		} else {
-			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"This item does not contain name information");
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+					+ "This item does not contain name information");
 		}
 		return name;
 	}
@@ -152,15 +175,19 @@ public class WebServiceProcessor {
 		if (match.find()) {
 			name = match.group().substring(12);
 		} else {
-			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"This item does not contain file information");
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+					+ "This item does not contain file information");
 		}
 		return name;
 	}
 
 	public String getTestcaseFromTestPlan(String testplan) {
 		String testplanName, testCycleName, attachmentName, consolidatedTestCases = "";
+		int downloadedTcCount = 0;
+		status = Constants.invalidTestPlanID;
 		try {
 			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
+				status = Constants.webservicesError;
 				testplanName = getItemName(testplan);
 				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
 					testCycleName = getItemName(currentTestCycle);
@@ -168,17 +195,19 @@ public class WebServiceProcessor {
 						attachmentName = getItemName(currentAttachment);
 						consolidatedTestCases = consolidatedTestCases + "\n\n"
 								+ getAttachmentContent(currentAttachment);
+						downloadedTcCount = downloadedTcCount + 1;
+						Initilizer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
 					}
-					
+
 				}
-				
+
 			}
 			return consolidatedTestCases;
 		} catch (Exception e) {
 			if (e.toString().contains("java.net.UnknownHostException")) {
 				return Constants.jamaConnectivityIssue;
 			} else {
-				return Constants.invalidTestPlanID;
+				return status;
 			}
 
 		}

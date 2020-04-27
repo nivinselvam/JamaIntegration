@@ -1,12 +1,9 @@
 package com;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.swing.SwingUtilities;
 
 public class Initilizer {
-	
+	static WindowGUI GUI;
 	
 	/**
 	 * Launch the application.
@@ -14,7 +11,7 @@ public class Initilizer {
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                WindowGUI GUI = new WindowGUI();
+                 GUI = new WindowGUI();
                 GUI.frmAttDriver.setVisible(true);
             }
         });

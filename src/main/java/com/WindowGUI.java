@@ -10,27 +10,24 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+
 import java.util.Calendar;
-import java.util.Date;
+
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JFormattedTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.NumberFormatter;
 
-import org.apache.log4j.Logger;
 
 public class WindowGUI {
 
 	public JFrame frmAttDriver;
 	public JTextArea txtAreaLogs;
 	public JFormattedTextField txtTestPlanID;
-	public Logger logger = Logger.getLogger(WindowGUI.class);
+	public JLabel lblDownloadedTcValue;
+	public JLabel lblAvailableTcValue;
 	FileManipulator fm = new FileManipulator();
 	WebServiceProcessor wsp = new WebServiceProcessor();
 	String status;
@@ -49,7 +46,7 @@ public class WindowGUI {
 	private void initialize() {
 		frmAttDriver = new JFrame();
 		frmAttDriver.setTitle("ATT Driver");
-		frmAttDriver.setBounds(100, 100, 527, 517);
+		frmAttDriver.setBounds(100, 100, 511, 576);
 		frmAttDriver.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JLabel lblTestPlanId = new JLabel("Test Plan ID");
@@ -71,44 +68,64 @@ public class WindowGUI {
 		JScrollPane spLogs = new JScrollPane();		
 
 		JButton btnClearLogs = new JButton("Clear Logs");
+		
+		lblDownloadedTcValue = new JLabel("");
+		
+		JLabel lblDownloadedTcField = new JLabel("Downloaded Testcases:");
+		
+		lblAvailableTcValue = new JLabel("");
+		
+		JLabel lblAvailableTcField = new JLabel("Available Test Cases:");
 
 		GroupLayout groupLayout = new GroupLayout(frmAttDriver.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(12)
-							.addComponent(lblTestPlanId)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-							.addGap(23)
-							.addComponent(btnOk, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-							.addGap(0, 0, Short.MAX_VALUE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(lblRuntimeLogs)))
-					.addContainerGap())
-				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(spLogs)
-					.addGap(14))
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(lblDownloadedTcField)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblDownloadedTcValue))
+						.addComponent(lblRuntimeLogs)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblTestPlanId)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(130)
+									.addComponent(lblAvailableTcValue))
+								.addComponent(lblAvailableTcField))
+							.addGap(18)
+							.addComponent(btnOk, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(40)
+					.addGap(14)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTestPlanId)
 						.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnOk))
+						.addComponent(btnOk)
+						.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblAvailableTcValue)
+						.addComponent(lblAvailableTcField))
+					.addGap(18)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblDownloadedTcField)
+						.addComponent(lblDownloadedTcValue))
+					.addGap(18)
 					.addComponent(lblRuntimeLogs)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+					.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		
@@ -117,7 +134,7 @@ public class WindowGUI {
 				txtAreaLogs.setEditable(false);
 				txtAreaLogs.setLineWrap(true);
 				PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
-				PrintStream standardout = System.out;
+				//PrintStream standardout = System.out;
 				System.setOut(printStream);
 				System.setErr(printStream);
 
@@ -125,6 +142,8 @@ public class WindowGUI {
 
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				lblAvailableTcValue.setText("");
+				lblDownloadedTcValue.setText("");
 				printLog();
 			}
 		});
@@ -156,11 +175,12 @@ public class WindowGUI {
 
 					testCasesResult = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
 					if (testCasesResult.equals(Constants.invalidTestPlanID)
-							|| testCasesResult.equals(Constants.jamaConnectivityIssue)) {
+							|| testCasesResult.equals(Constants.jamaConnectivityIssue)|| testCasesResult.equals(Constants.webservicesError)) {
 						System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+testCasesResult);
 					} else {
 						// Below try catch block will create test suite xml file
 						try {
+					
 							InetAddress addr = InetAddress.getLocalHost();
 							filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
 									+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
