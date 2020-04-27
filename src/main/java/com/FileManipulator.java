@@ -37,7 +37,6 @@ public class FileManipulator{
 	Pattern pattern;
 	Matcher matcher;
 	boolean valid;
-	Logger logger = Logger.getLogger(FileManipulator.class);
 	/*
 	 * This method is used to create a folder in the specified path It takes two
 	 * arguments as input. 1. Name in which the folder should be created. 2. Path in
@@ -46,15 +45,12 @@ public class FileManipulator{
 	public String createFolder(String folderName, String path) {
 		file = new File(path + folderName);
 		if (file.exists()) {
-			logger.warn(folderName + " already exists");
-			return "\n"+folderName + " already exists";
+			return folderName + " already exists";
 		} else {
 			if (file.mkdir()) {
-				logger.info("Folder " + folderName + " was created successfully");
-				return "\nFolder " + folderName + " was created successfully";
+				return "Folder " + folderName + " was created successfully";
 			} else {
-				logger.info("Unable to create folder " + folderName);
-				return "\nUnable to create folder " + folderName;
+				return "Unable to create folder " + folderName;
 			}
 		}
 
@@ -74,12 +70,11 @@ public class FileManipulator{
 			fw = new FileWriter(path);
 			bw = new BufferedWriter(fw);
 			bw.write(content);
-			return "\nText file created successfully";
+			return "Text file created successfully";
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			logger.fatal("Unable to create the text file");
-			return "\nUnable to create the text file";
+			return "Unable to create the text file";
 		} finally {
 			try {
 				if (bw != null)
@@ -101,7 +96,6 @@ public class FileManipulator{
 	public String createXMLFile(String fileNameWithPath) {
 		file = new File(fileNameWithPath);
 		if (file.exists()) {
-			logger.info("File already exists");
 			if(file.delete()) {
 				createXMLFile(fileNameWithPath);
 				return Constants.deletedExistingTestSuite;

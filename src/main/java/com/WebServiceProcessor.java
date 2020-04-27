@@ -1,5 +1,6 @@
 package com;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +20,7 @@ public class WebServiceProcessor {
 	static ResponseBody body;
 	static Response response;
 	static String testplan;
+	
 
 	public WebServiceProcessor() {
 
@@ -30,7 +32,7 @@ public class WebServiceProcessor {
 		requestSpecification.header("Content-Type", "application/json");
 		requestSpecification.body(responseString);
 		response = requestSpecification.put(request);
-		System.out.println(response.getStatusCode());
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+response.getStatusCode());
 	}
 
 	/*
@@ -46,7 +48,7 @@ public class WebServiceProcessor {
 		testCycleCount = Integer
 				.parseInt(body.asString().substring(positionOfResultCount + 15, positionOfResultCount + 16));
 		String[] testCycleIDs = new String[testCycleCount];
-		System.out.println("Test cycles in the test plan " + testPlanID + ": " + testCycleCount);
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Test cycles in the test plan " + testPlanID + ": " + testCycleCount);
 		Pattern pattern = Pattern.compile("\"id\":\\w*");
 		Matcher match = pattern.matcher(body.asString());
 		while (match.find()) {
@@ -68,8 +70,7 @@ public class WebServiceProcessor {
 		positionOfResultCount = body.asString().indexOf("\"totalResults\":");
 		testCaseCount = Integer
 				.parseInt(body.asString().substring(positionOfResultCount + 15, positionOfResultCount + 16));
-		System.out.println("#####################################################################################");
-		System.out.println("Test cases assigned to test Cycle " + testCycleID + ": " + testCaseCount);
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Test cases assigned to test Cycle " + testCycleID + ": " + testCaseCount);
 		String[] testCaseIDs = new String[testCaseCount];
 		Pattern pattern = Pattern.compile("\"testCase\":\\w*");
 		Matcher match = pattern.matcher(body.asString());
@@ -93,8 +94,7 @@ public class WebServiceProcessor {
 		positionOfResultCount = body.asString().indexOf("\"totalResults\":");
 		attachmentsCount = Integer
 				.parseInt(body.asString().substring(positionOfResultCount + 15, positionOfResultCount + 16));
-		System.out.println("***********************************************************************************");
-		System.out.println("Count of attachments in test case " + testCaseID + ": " + attachmentsCount);
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Count of attachments in test case " + testCaseID + ": " + attachmentsCount);
 		String[] attachmentIDs = new String[attachmentsCount];
 		Pattern pattern = Pattern.compile("\"id\":\\w*");
 		Matcher match = pattern.matcher(body.asString());
@@ -114,10 +114,9 @@ public class WebServiceProcessor {
 	public static String getAttachmentContent(String attachmentID) {
 		response = RestAssured.get(baseURL + "attachments/" + attachmentID + "/file");
 		body = response.getBody();
-		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println("Content of attachment: " + attachmentID);
-		System.out.println("-----------------------------------------------------------------------------------");
-		System.out.println(body.asString());
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Content of attachment: " + attachmentID);
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"-----------------------------------------------------------------------------------");
+		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+body.asString());
 		return body.asString();
 	}
 
@@ -134,7 +133,7 @@ public class WebServiceProcessor {
 		if (match.find()) {
 			name = match.group().substring(8);
 		} else {
-			System.out.println("This item does not contain name information");
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"This item does not contain name information");
 		}
 		return name;
 	}
@@ -148,7 +147,7 @@ public class WebServiceProcessor {
 		if (match.find()) {
 			name = match.group().substring(12);
 		} else {
-			System.out.println("This item does not contain file information");
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"This item does not contain file information");
 		}
 		return name;
 	}

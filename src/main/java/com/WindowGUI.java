@@ -8,19 +8,24 @@ import javax.swing.JScrollPane;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JFormattedTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
 
-public class WindowGUI extends Thread {
+public class WindowGUI {
 
 	public JFrame frmAttDriver;
 	public JTextArea txtAreaLogs;
@@ -33,16 +38,9 @@ public class WindowGUI extends Thread {
 	/**
 	 * Create the application.
 	 * 
-	 * @wbp.parser.entryPoint
 	 */
 	public WindowGUI() {
-
-	}
-
-	@Override
-	public void run() {
-		initialize();
-		frmAttDriver.setVisible(true);
+		initialize();		
 	}
 
 	/**
@@ -51,16 +49,15 @@ public class WindowGUI extends Thread {
 	private void initialize() {
 		frmAttDriver = new JFrame();
 		frmAttDriver.setTitle("ATT Driver");
-		frmAttDriver.setBounds(100, 100, 406, 517);
+		frmAttDriver.setBounds(100, 100, 527, 517);
 		frmAttDriver.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JLabel lblTestPlanId = new JLabel("Please enter the test plan ID :");
+		JLabel lblTestPlanId = new JLabel("Test Plan ID");
 		lblTestPlanId.setFont(new Font("Tahoma", Font.BOLD, 15));
 
 		JLabel lblRuntimeLogs = new JLabel("Runtime logs:");
 
 		JButton btnOk = new JButton("Ok");
-		JScrollPane spLogs = new JScrollPane();
 
 //		NumberFormat format = NumberFormat.getInstance();
 //		NumberFormatter formatter = new NumberFormatter(format);
@@ -71,63 +68,96 @@ public class WindowGUI extends Thread {
 //		// If you want the value to be committed on each keystroke instead of focus lost
 //		formatter.setCommitsOnValidEdit(true);
 		txtTestPlanID = new JFormattedTextField();
-
-		txtAreaLogs = new JTextArea();
-		txtAreaLogs.setEditable(false);
-		txtAreaLogs.setLineWrap(true);
+		JScrollPane spLogs = new JScrollPane();		
 
 		JButton btnClearLogs = new JButton("Clear Logs");
 
 		GroupLayout groupLayout = new GroupLayout(frmAttDriver.getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup().addGap(14)
-										.addComponent(spLogs, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(txtAreaLogs, GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(12).addComponent(lblTestPlanId)
-										.addPreferredGap(ComponentPlacement.UNRELATED)
-										.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, 130,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(0, 0, Short.MAX_VALUE))
-								.addGroup(groupLayout.createSequentialGroup().addGap(12).addComponent(lblRuntimeLogs))
-								.addGroup(groupLayout.createSequentialGroup().addGap(60)
-										.addComponent(btnOk, GroupLayout.PREFERRED_SIZE, 106,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(56).addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 105,
-												GroupLayout.PREFERRED_SIZE)))
-						.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addGap(40)
-				.addGroup(groupLayout
-						.createParallelGroup(Alignment.BASELINE).addComponent(lblTestPlanId).addComponent(txtTestPlanID,
-								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGap(22)
-				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnOk)
-						.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-				.addGap(18).addComponent(lblRuntimeLogs).addGap(9)
-				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
-						.addGroup(groupLayout.createSequentialGroup().addGap(4).addComponent(txtAreaLogs,
-								GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)))
-				.addContainerGap()));
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(12)
+							.addComponent(lblTestPlanId)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
+							.addGap(23)
+							.addComponent(btnOk, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+							.addGap(0, 0, Short.MAX_VALUE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(lblRuntimeLogs)))
+					.addContainerGap())
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(spLogs)
+					.addGap(14))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(40)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTestPlanId)
+						.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnOk))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(lblRuntimeLogs)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		
+				txtAreaLogs = new JTextArea();
+				spLogs.setViewportView(txtAreaLogs);
+				txtAreaLogs.setEditable(false);
+				txtAreaLogs.setLineWrap(true);
+				PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
+				PrintStream standardout = System.out;
+				System.setOut(printStream);
+				System.setErr(printStream);
 
 		frmAttDriver.getContentPane().setLayout(groupLayout);
 
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				printLog();
+			}
+		});
+
+		btnClearLogs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					txtAreaLogs.getDocument().remove(0, txtAreaLogs.getDocument().getLength());
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
+				};
+			}
+		});
+	}
+	
+	/**
+     * Prints log statements in the text area
+     */
+    private void printLog() {
+        Thread thread = new Thread(new Runnable() {
+            //@Override
+            public void run() {
+
 				String filePath = "", testCasesResult = "";
-				txtAreaLogs.append(Constants.startProcessText+"\n");
+				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.startProcessText);
 				if (txtTestPlanID.getText().equals("")) {
-					txtAreaLogs.append(Constants.testPlanIDMandate);
+					System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.testPlanIDMandate);
 				} else {
 
 					testCasesResult = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
 					if (testCasesResult.equals(Constants.invalidTestPlanID)
 							|| testCasesResult.equals(Constants.jamaConnectivityIssue)) {
-						txtAreaLogs.append(testCasesResult);
+						System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+testCasesResult);
 					} else {
 						// Below try catch block will create test suite xml file
 						try {
@@ -136,45 +166,40 @@ public class WindowGUI extends Thread {
 									+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
 							// logger.info("System name is " +
 							// addr.getHostName().substring(5).toLowerCase());
-							// txtAreaLogs.append("\nSystem name is " +
-							// addr.getHostName().substring(5).toLowerCase());
+							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Trying to create test suite in the path: "+filePath);
 							status = fm.createXMLFile(filePath);
 							if (status.equals(Constants.unableToDeleteTestSuite)) {
-								txtAreaLogs.append(status);
+								System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+status);
 							} else {
-								txtAreaLogs.append(status);
+								System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+status);
 								// This try catch block will add the test case tag to the test suite xml
 								try {
 									status = fm.addTestCasesTag(filePath);
 									if (status.equals(Constants.testcaseTagAdded)) {
-										txtAreaLogs.append(status);
+										System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+status);
 										try {
-											txtAreaLogs.append(fm.addTestCasesToTestSuite(testCasesResult, filePath));
+											System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+fm.addTestCasesToTestSuite(testCasesResult, filePath));
 										} catch (IOException e1) {
-											txtAreaLogs.append(Constants.unableToAddTestcase);
+											System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.unableToAddTestcase);
 										}
 
 									} else {
-										txtAreaLogs.append(Constants.testcaseTagNotAdded);
+										System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.testcaseTagNotAdded);
 									}
 								} catch (IOException e1) {
-									txtAreaLogs.append(Constants.testcaseTagNotAdded);
+									System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.testcaseTagNotAdded);
 								}
 							}
 
 						} catch (IOException e1) {
-							txtAreaLogs.append(Constants.unableToCreateTestSuite);
+							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.unableToCreateTestSuite);
 						}
 					}
 				}
-				txtAreaLogs.append("\n"+Constants.endOfProcessText);
-			}
-		});
-
-		btnClearLogs.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				txtAreaLogs.setText("");
-			}
-		});
-	}
+				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.endOfProcessText);
+			
+            }
+        });
+        thread.start();
+    }
 }
