@@ -188,11 +188,12 @@ public class WebServiceProcessor {
 		try {
 			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
 				status = Constants.webservicesError;
-				testplanName = getItemName(testplan);
+				//testplanName = getItemName(testplan);
 				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
-					testCycleName = getItemName(currentTestCycle);
+					//testCycleName = getItemName(currentTestCycle);
 					for (String currentAttachment : getAttachmentsInTestCase(currentTestCase)) {
 						attachmentName = getItemName(currentAttachment);
+						System.out.println("Attachment name is"+attachmentName);
 						consolidatedTestCases = consolidatedTestCases + "\n\n"
 								+ getAttachmentContent(currentAttachment);
 						downloadedTcCount = downloadedTcCount + 1;

@@ -13,3 +13,7 @@
 2020-04-21 18:32:32 INFO  WindowGUI:180 - Finished processing
 2020-04-21 18:33:07 INFO  WindowGUI:180 - Finished processing
 2020-04-21 18:33:47 INFO  WindowGUI:180 - Finished processing
+2020-04-27 12:47:07 INFO  DefaultHttpClient:623 - I/O exception (java.net.SocketException) caught when connecting to {s}->https://jama.verifone.com:443: Software caused connection abort: recv failed
+2020-04-27 12:47:07 INFO  DefaultHttpClient:631 - Retrying connect to {s}->https://jama.verifone.com:443
+2020-04-27 23:37:10 INFO  DefaultHttpClient:623 - I/O exception (java.net.SocketException) caught when connecting to {s}->https://jama.verifone.com:443: Software caused connection abort: recv failed
+2020-04-27 23:37:10 INFO  DefaultHttpClient:631 - Retrying connect to {s}->https://jama.verifone.com:443

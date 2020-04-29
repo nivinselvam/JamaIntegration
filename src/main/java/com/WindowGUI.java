@@ -19,6 +19,9 @@ import javax.swing.JTextArea;
 import javax.swing.JFormattedTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.text.BadLocationException;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 
 public class WindowGUI {
@@ -50,7 +53,7 @@ public class WindowGUI {
 		frmAttDriver.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JLabel lblTestPlanId = new JLabel("Test Plan ID");
-		lblTestPlanId.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblTestPlanId.setFont(new Font("Tahoma", Font.BOLD, 13));
 
 		JLabel lblRuntimeLogs = new JLabel("Runtime logs:");
 
@@ -139,6 +142,25 @@ public class WindowGUI {
 				System.setErr(printStream);
 
 		frmAttDriver.getContentPane().setLayout(groupLayout);
+		
+		JMenuBar menuBar = new JMenuBar();
+		frmAttDriver.setJMenuBar(menuBar);
+		
+		JMenu mnFile = new JMenu("File");
+		menuBar.add(mnFile);
+		
+		JMenuItem mntmSaveLogs = new JMenuItem("Save Logs");
+		mnFile.add(mntmSaveLogs);
+		
+		JMenuItem mntmClose = new JMenuItem("Close");
+		
+		mnFile.add(mntmClose);
+		
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+		
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mnHelp.add(mntmAbout);
 
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -155,6 +177,12 @@ public class WindowGUI {
 				} catch (BadLocationException e1) {
 					e1.printStackTrace();
 				};
+			}
+		});
+		
+		mntmClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
 			}
 		});
 	}
