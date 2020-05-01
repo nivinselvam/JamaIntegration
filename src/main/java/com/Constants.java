@@ -5,13 +5,24 @@ import java.util.Calendar;
 import java.util.Date;
 
 public final class Constants {
-	
+	//Credentials of JAMA
 	public final static String username = "nivins1";
 	public final static String password = "Mypassw0rdis1";
-	
+	//Date and time information for logs
 	public final static SimpleDateFormat logsDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss   ");
-	public final static Date date = new Date();	
-	
+	public final static Date date = new Date();
+	//Files naming reference
+	public final static String receiptFileNamePrefix = "\\bM_";
+	public final static String receiptRulesFileNamePrefix = "R_M_";
+	public final static String tLogFileNamePrefix = "B_M_";
+	public final static String tLogRulesFileNamePrefix = "TLOG-Rule";
+	public final static String testsuiteFileNamePrefix = "-TC-";	
+	//Path where files will be saved
+	public final static String receiptFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipts";
+	public final static String receiptRulesFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipt-Rules";
+	public final static String tLogFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog";
+	public final static String tLogRuleFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog-Rules";
+	public final static String testsuiteFilePath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\TestSuite";	
 	/*
 	 * Below constants are the texts to be used in the logging
 	 * \n is added to all the texts to make sure the line is printed in new line

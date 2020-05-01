@@ -19,7 +19,7 @@ public class WebServiceProcessor {
 	String responseString;
 	ResponseBody body;
 	Response response;
-	String testplan, status;
+	String testplan, status, itemName, fileName;
 	Pattern pattern;
 	Matcher match;
 
@@ -82,7 +82,7 @@ public class WebServiceProcessor {
 		if (match.find()) {
 			testCaseCount = Integer.parseInt(match.group().substring(15));
 		}
-		Initilizer.GUI.lblAvailableTcValue.setText(String.valueOf(testCaseCount));		
+		Initilizer.GUI.lblAvailableTcValue.setText(String.valueOf(testCaseCount));
 		String[] testCaseIDs = new String[testCaseCount];
 		pattern = Pattern.compile("\"testCase\":\\w*");
 		match = pattern.matcher(body.asString());
@@ -90,14 +90,14 @@ public class WebServiceProcessor {
 			testCaseIDs[i] = match.group().substring(11);
 			i++;
 		}
-		if(testCaseCount ==0) {
+		if (testCaseCount == 0) {
 			return null;
-		}else {
+		} else {
 			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 					+ "Test cases assigned to test Cycle " + testCycleID + ": " + testCaseCount);
 			return testCaseIDs;
 		}
-		
+
 	}
 
 	/*
@@ -114,22 +114,22 @@ public class WebServiceProcessor {
 		match = pattern.matcher(body.asString());
 		if (match.find()) {
 			attachmentsCount = Integer.parseInt(match.group().substring(15));
-		}		
+		}
 		String[] attachmentIDs = new String[attachmentsCount];
-		Pattern pattern = Pattern.compile("\"id\":\\w*");
-		Matcher match = pattern.matcher(body.asString());
+		pattern = Pattern.compile("\"id\":\\w*");
+		match = pattern.matcher(body.asString());
 		while (match.find()) {
 			attachmentIDs[i] = match.group().substring(5);
 			i++;
 		}
-		if(attachmentsCount==0) {
+		if (attachmentsCount == 0) {
 			return null;
-		}else {
+		} else {
 			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 					+ "Count of attachments in test case " + testCaseID + ": " + attachmentsCount);
 			return attachmentIDs;
 		}
-		
+
 	}
 
 	/*
@@ -152,33 +152,46 @@ public class WebServiceProcessor {
 	 * as input argument and returns the name of the item in string format.
 	 */
 	public String getItemName(String itemID) {
-		String name = "";
+		itemName = "";
 		response = RestAssured.get(baseURL + "abstractitems/" + itemID);
 		body = response.getBody();
-		Pattern pattern = Pattern.compile("\"name\":\"[\\w|\\s]*");
-		Matcher match = pattern.matcher(body.asString());
+		pattern = Pattern.compile("\"name\":\"[\\w|\\s]*");
+		match = pattern.matcher(body.asString());
 		if (match.find()) {
-			name = match.group().substring(8);
+			itemName = match.group().substring(8);
 		} else {
 			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 					+ "This item does not contain name information");
 		}
-		return name;
+		return itemName;
 	}
 
 	public String getAttachmentFileName(String itemID) {
-		String name = "";
+		fileName = "";
 		response = RestAssured.get(baseURL + "abstractitems/" + itemID);
 		body = response.getBody();
-		Pattern pattern = Pattern.compile("\"fileName\":\"[\\w|\\s]*");
-		Matcher match = pattern.matcher(body.asString());
+		pattern = Pattern.compile("\"fileName\":\"[\\w|\\s]*");
+		match = pattern.matcher(body.asString());
 		if (match.find()) {
-			name = match.group().substring(12);
+			fileName = match.group().substring(12);
 		} else {
 			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 					+ "This item does not contain file information");
 		}
-		return name;
+		return fileName;
+	}
+
+	public String getAttachmentFileNameWithoutWebService(String response) {
+		fileName = "";
+		pattern = Pattern.compile("\"fileName\":\"[\\w|\\s]*");
+		match = pattern.matcher(body.asString());
+		if (match.find()) {
+			fileName = match.group().substring(12);
+		} else {
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+					+ "This item does not contain file information");
+		}
+		return fileName;
 	}
 
 	public String getTestcaseFromTestPlan(String testplan) {
@@ -188,20 +201,18 @@ public class WebServiceProcessor {
 		try {
 			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
 				status = Constants.webservicesError;
-				//testplanName = getItemName(testplan);
+				// testplanName = getItemName(testplan);
 				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
-					//testCycleName = getItemName(currentTestCycle);
+					// testCycleName = getItemName(currentTestCycle);
 					for (String currentAttachment : getAttachmentsInTestCase(currentTestCase)) {
 						attachmentName = getItemName(currentAttachment);
-						System.out.println("Attachment name is"+attachmentName);
+						System.out.println("Attachment name is" + attachmentName);
 						consolidatedTestCases = consolidatedTestCases + "\n\n"
 								+ getAttachmentContent(currentAttachment);
 						downloadedTcCount = downloadedTcCount + 1;
 						Initilizer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
 					}
-
 				}
-
 			}
 			return consolidatedTestCases;
 		} catch (Exception e) {
