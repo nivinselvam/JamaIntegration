@@ -4,6 +4,9 @@ import javax.swing.SwingUtilities;
 
 public class Initilizer {
 	static WindowGUI GUI;
+	static FileManipulator fm = new FileManipulator();
+	static WebServiceProcessor wsp = new WebServiceProcessor();
+	static AttachmentDownloader AD = new AttachmentDownloader();
 	
 	/**
 	 * Launch the application.

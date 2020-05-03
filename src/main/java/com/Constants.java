@@ -12,20 +12,29 @@ public final class Constants {
 	public final static SimpleDateFormat logsDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss   ");
 	public final static Date date = new Date();
 	//Files naming reference
-	public final static String receiptFileNamePrefix = "\\bM_";
-	public final static String receiptRulesFileNamePrefix = "R_M_";
-	public final static String tLogFileNamePrefix = "B_M_";
-	public final static String tLogRulesFileNamePrefix = "TLOG-Rule";
+	public final static String receiptFileNamePrefix = "\\bM_[\\w|-]+";
+	public final static String receiptRulesFileNamePrefix = "R_M_[\\w|-]+";
+	public final static String tLogFileNamePrefix = "B_M_[\\w|-]+";
+	public final static String tLogRulesFileNamePrefix = "TLOG-Rule[.]*";
 	public final static String testsuiteFileNamePrefix = "-TC-";	
 	//Path where files will be saved
-	public final static String receiptFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipts";
-	public final static String receiptRulesFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipt-Rules";
-	public final static String tLogFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog";
-	public final static String tLogRuleFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog-Rules";
-	public final static String testsuiteFilePath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\TestSuite";	
+	public final static String defaultReceiptFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipts";
+	public final static String defaultReceiptRulesFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipt-Rules";
+	public final static String defaultTLogFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog";
+	public final static String defaultTLogRuleFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog-Rules";
+	public final static String defaultTestsuiteFilePath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\TestSuite";
+	public final static String defaultPATSinitFilePath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles";
+	public final static String defaultResultReportPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles";
+	//Path where files will be saved
+	public final static String ReceiptFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipts";
+	public final static String ReceiptRulesFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipt-Rules";
+	public final static String TLogFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog";
+	public final static String TLogRuleFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Tlog-Rules";
+	public final static String TestsuiteFilePath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\TestSuite";
+	public final static String PATSinitFilePath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles";
+	public final static String ResultReportPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles";
 	/*
 	 * Below constants are the texts to be used in the logging
-	 * \n is added to all the texts to make sure the line is printed in new line
 	 */
 	public final static String startProcessText = "Started processing. Please wait...";
 	public final static String endOfProcessText = "Finished processing\n----------------------------------------------------------------------------------------------";
@@ -42,4 +51,5 @@ public final class Constants {
 	public final static String testcasesAdded = "Test case(s) updated to the TestSuite";
 	public final static String fileDoesntExist = "File does not exist";
 	public final static String webservicesError = "Something went wrong while fetching the test cases from JAMA.";
+	public final static String noUpdateForTestSuite	= "No Data available to update the Testsuite";
 }

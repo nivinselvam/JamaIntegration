@@ -10,19 +10,21 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetAddress;
-
 import java.util.Calendar;
-
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JFormattedTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.text.BadLocationException;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-
+import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JCheckBox;
+import javax.swing.JProgressBar;
 
 public class WindowGUI {
 
@@ -31,16 +33,30 @@ public class WindowGUI {
 	public JFormattedTextField txtTestPlanID;
 	public JLabel lblDownloadedTcValue;
 	public JLabel lblAvailableTcValue;
-	FileManipulator fm = new FileManipulator();
-	WebServiceProcessor wsp = new WebServiceProcessor();
 	String status;
+	public JTextField txtReceiptRules;
+	public JTextField txtTLOG;
+	public JTextField txtTLOGRules;
+	public JTextField txtReceipts;
+	public JTextField txtTestSuite;
+	public JTextField txtPATSinit;
+	private JCheckBox chckbxTestSuiteDefaultPath;
+	private JCheckBox chckbxReceiptsDefaultPath;
+	private JCheckBox chckbxReceiptRulesDefaultPath;
+	private JCheckBox chckbxTLOGDefaultPath;
+	private JCheckBox chckbxTLOGRulesDefaultPath;
+	private JCheckBox chckbxPATSInitDefaultPath;
+	private JTextField txtReportCheckDuration;
+	private JTextField txtResultReport;
+	private JCheckBox chckbxResultReport;
+	private JButton btnInitiatePatsExecution;
 
 	/**
 	 * Create the application.
 	 * 
 	 */
 	public WindowGUI() {
-		initialize();		
+		initialize();
 	}
 
 	/**
@@ -49,118 +65,69 @@ public class WindowGUI {
 	private void initialize() {
 		frmAttDriver = new JFrame();
 		frmAttDriver.setTitle("ATT Driver");
-		frmAttDriver.setBounds(100, 100, 511, 576);
+		frmAttDriver.setBounds(100, 100, 570, 715);
 		frmAttDriver.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JLabel lblTestPlanId = new JLabel("Test Plan ID");
-		lblTestPlanId.setFont(new Font("Tahoma", Font.BOLD, 13));
-
-		JLabel lblRuntimeLogs = new JLabel("Runtime logs:");
-
-		JButton btnOk = new JButton("Ok");
-
-//		NumberFormat format = NumberFormat.getInstance();
-//		NumberFormatter formatter = new NumberFormatter(format);
-//		formatter.setValueClass(Integer.class);
-//		formatter.setMinimum(0);
-//		formatter.setMaximum(Integer.MAX_VALUE);
-//		formatter.setAllowsInvalid(false);
-//		// If you want the value to be committed on each keystroke instead of focus lost
-//		formatter.setCommitsOnValidEdit(true);
-		txtTestPlanID = new JFormattedTextField();
-		JScrollPane spLogs = new JScrollPane();		
-
-		JButton btnClearLogs = new JButton("Clear Logs");
-		
-		lblDownloadedTcValue = new JLabel("");
-		
-		JLabel lblDownloadedTcField = new JLabel("Downloaded Testcases:");
-		
-		lblAvailableTcValue = new JLabel("");
-		
-		JLabel lblAvailableTcField = new JLabel("Available Test Cases:");
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
 		GroupLayout groupLayout = new GroupLayout(frmAttDriver.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblDownloadedTcField)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblDownloadedTcValue))
-						.addComponent(lblRuntimeLogs)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(lblTestPlanId)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(130)
-									.addComponent(lblAvailableTcValue))
-								.addComponent(lblAvailableTcField))
-							.addGap(18)
-							.addComponent(btnOk, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(14)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblTestPlanId)
-						.addComponent(txtTestPlanID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnOk)
-						.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblAvailableTcValue)
-						.addComponent(lblAvailableTcField))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblDownloadedTcField)
-						.addComponent(lblDownloadedTcValue))
-					.addGap(18)
-					.addComponent(lblRuntimeLogs)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-					.addContainerGap())
-		);
-		
-				txtAreaLogs = new JTextArea();
-				spLogs.setViewportView(txtAreaLogs);
-				txtAreaLogs.setEditable(false);
-				txtAreaLogs.setLineWrap(true);
-				PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
-				//PrintStream standardout = System.out;
-				System.setOut(printStream);
-				System.setErr(printStream);
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup().addContainerGap()
+						.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE).addGap(5)));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(Alignment.LEADING,
+				groupLayout.createSequentialGroup().addContainerGap()
+						.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE).addContainerGap()));
 
-		frmAttDriver.getContentPane().setLayout(groupLayout);
-		
-		JMenuBar menuBar = new JMenuBar();
-		frmAttDriver.setJMenuBar(menuBar);
-		
-		JMenu mnFile = new JMenu("File");
-		menuBar.add(mnFile);
-		
-		JMenuItem mntmSaveLogs = new JMenuItem("Save Logs");
-		mnFile.add(mntmSaveLogs);
-		
-		JMenuItem mntmClose = new JMenuItem("Close");
-		
-		mnFile.add(mntmClose);
-		
-		JMenu mnHelp = new JMenu("Help");
-		menuBar.add(mnHelp);
-		
-		JMenuItem mntmAbout = new JMenuItem("About");
-		mnHelp.add(mntmAbout);
+		JPanel panelMain = new JPanel();
+		tabbedPane.addTab("Main", null, panelMain, null);
+		panelMain.setLayout(null);
+
+		JLabel lblTestPlanId = new JLabel("Test Plan ID");
+		lblTestPlanId.setBounds(12, 62, 77, 16);
+		panelMain.add(lblTestPlanId);
+		lblTestPlanId.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		// NumberFormat format = NumberFormat.getInstance();
+		// NumberFormatter formatter = new NumberFormatter(format);
+		// formatter.setValueClass(Integer.class);
+		// formatter.setMinimum(0);
+		// formatter.setMaximum(Integer.MAX_VALUE);
+		// formatter.setAllowsInvalid(false);
+		// // If you want the value to be committed on each keystroke instead of focus
+		// lost
+		// formatter.setCommitsOnValidEdit(true);
+		txtTestPlanID = new JFormattedTextField();
+		txtTestPlanID.setBounds(119, 59, 201, 22);
+		panelMain.add(txtTestPlanID);
+
+		JButton btnOk = new JButton("Download Attachments");
+		btnOk.setBounds(332, 58, 186, 25);
+		panelMain.add(btnOk);
+
+		JLabel lblAvailableTcField = new JLabel("Available Test Cases:");
+		lblAvailableTcField.setBounds(12, 110, 123, 16);
+		panelMain.add(lblAvailableTcField);
+
+		JLabel lblDownloadedTcField = new JLabel("Downloaded Testcases:");
+		lblDownloadedTcField.setBounds(12, 162, 136, 16);
+		panelMain.add(lblDownloadedTcField);
+
+		lblDownloadedTcValue = new JLabel("");
+		lblDownloadedTcValue.setBounds(160, 162, 28, 16);
+		panelMain.add(lblDownloadedTcValue);
+
+		lblAvailableTcValue = new JLabel("");
+		lblAvailableTcValue.setBounds(147, 110, 28, 16);
+		panelMain.add(lblAvailableTcValue);
+
+		JProgressBar progressBarTestCaseDownload = new JProgressBar();
+		progressBarTestCaseDownload.setBounds(12, 221, 506, 16);
+		panelMain.add(progressBarTestCaseDownload);
+
+		btnInitiatePatsExecution = new JButton("Initiate PATS Execution");
+		btnInitiatePatsExecution.setEnabled(false);
+		btnInitiatePatsExecution.setBounds(175, 306, 175, 25);
+		panelMain.add(btnInitiatePatsExecution);
 
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -170,84 +137,341 @@ public class WindowGUI {
 			}
 		});
 
+		JPanel paneConfiguration = new JPanel();
+		tabbedPane.addTab("Configuration", null, paneConfiguration, null);
+		paneConfiguration.setLayout(null);
+
+		JLabel lblTestsuite = new JLabel("TestSuite");
+		lblTestsuite.setBounds(14, 86, 77, 16);
+		paneConfiguration.add(lblTestsuite);
+		lblTestsuite.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		txtTestSuite = new JTextField();
+		txtTestSuite.setText(Constants.defaultTestsuiteFilePath);
+		txtTestSuite.setEnabled(false);
+		txtTestSuite.setBounds(121, 83, 361, 22);
+		paneConfiguration.add(txtTestSuite);
+		txtTestSuite.setColumns(10);
+
+		JLabel lblReceipts = new JLabel("Receipts");
+		lblReceipts.setBounds(14, 157, 56, 16);
+		paneConfiguration.add(lblReceipts);
+		lblReceipts.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		txtReceipts = new JTextField();
+		txtReceipts.setText(Constants.defaultReceiptFilesPath);
+		txtReceipts.setEnabled(false);
+		txtReceipts.setBounds(121, 154, 361, 22);
+		paneConfiguration.add(txtReceipts);
+		txtReceipts.setColumns(10);
+
+		chckbxReceiptsDefaultPath = new JCheckBox("Set Default Path");
+
+		chckbxReceiptsDefaultPath.setSelected(true);
+		chckbxReceiptsDefaultPath.setBounds(121, 185, 121, 25);
+		paneConfiguration.add(chckbxReceiptsDefaultPath);
+		chckbxReceiptsDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+		JLabel lblReceiptRules = new JLabel("Receipt Rules");
+		lblReceiptRules.setBounds(14, 229, 95, 16);
+		paneConfiguration.add(lblReceiptRules);
+		lblReceiptRules.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		txtReceiptRules = new JTextField();
+		txtReceiptRules.setText(Constants.defaultReceiptRulesFilesPath);
+		txtReceiptRules.setEnabled(false);
+		txtReceiptRules.setBounds(121, 223, 361, 22);
+		paneConfiguration.add(txtReceiptRules);
+		txtReceiptRules.setColumns(10);
+
+		chckbxReceiptRulesDefaultPath = new JCheckBox("Set Default Path");
+		chckbxReceiptRulesDefaultPath.setSelected(true);
+		chckbxReceiptRulesDefaultPath.setBounds(121, 254, 121, 25);
+		paneConfiguration.add(chckbxReceiptRulesDefaultPath);
+		chckbxReceiptRulesDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+		JLabel lblTlog = new JLabel("TLOG");
+		lblTlog.setBounds(14, 293, 56, 16);
+		paneConfiguration.add(lblTlog);
+		lblTlog.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		txtTLOG = new JTextField();
+		txtTLOG.setText(Constants.defaultTLogFilesPath);
+		txtTLOG.setEnabled(false);
+		txtTLOG.setBounds(121, 290, 361, 22);
+		paneConfiguration.add(txtTLOG);
+		txtTLOG.setColumns(10);
+
+		chckbxTLOGDefaultPath = new JCheckBox("Set Default Path");
+		chckbxTLOGDefaultPath.setSelected(true);
+		chckbxTLOGDefaultPath.setBounds(121, 321, 121, 25);
+		paneConfiguration.add(chckbxTLOGDefaultPath);
+		chckbxTLOGDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+		JLabel lblTlogRules = new JLabel("TLOG Rules");
+		lblTlogRules.setBounds(13, 353, 77, 16);
+		paneConfiguration.add(lblTlogRules);
+		lblTlogRules.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		txtTLOGRules = new JTextField();
+		txtTLOGRules.setText(Constants.defaultTLogRuleFilesPath);
+		txtTLOGRules.setEnabled(false);
+		txtTLOGRules.setBounds(120, 350, 362, 22);
+		paneConfiguration.add(txtTLOGRules);
+		txtTLOGRules.setColumns(10);
+
+		chckbxTLOGRulesDefaultPath = new JCheckBox("Set Default Path");
+		chckbxTLOGRulesDefaultPath.setSelected(true);
+		chckbxTLOGRulesDefaultPath.setBounds(121, 381, 121, 25);
+		paneConfiguration.add(chckbxTLOGRulesDefaultPath);
+		chckbxTLOGRulesDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+		chckbxTestSuiteDefaultPath = new JCheckBox("Set Default Path");
+		chckbxTestSuiteDefaultPath.setSelected(true);
+		chckbxTestSuiteDefaultPath.setBounds(121, 114, 121, 25);
+		paneConfiguration.add(chckbxTestSuiteDefaultPath);
+		chckbxTestSuiteDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+		JLabel lblNewLabel = new JLabel("PATS init file");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel.setBounds(14, 16, 95, 16);
+		paneConfiguration.add(lblNewLabel);
+
+		txtPATSinit = new JTextField();
+		txtPATSinit.setText(Constants.defaultPATSinitFilePath);
+		txtPATSinit.setEnabled(false);
+		txtPATSinit.setBounds(121, 13, 361, 22);
+		paneConfiguration.add(txtPATSinit);
+		txtPATSinit.setColumns(10);
+
+		chckbxPATSInitDefaultPath = new JCheckBox("Set Default Path");
+		chckbxPATSInitDefaultPath.setSelected(true);
+		chckbxPATSInitDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		chckbxPATSInitDefaultPath.setBounds(121, 44, 121, 25);
+		paneConfiguration.add(chckbxPATSInitDefaultPath);
+
+		JCheckBox chckbxPATSinit = new JCheckBox("Initiate PATS automaticatically");
+		chckbxPATSinit.setEnabled(false);
+		chckbxPATSinit.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		chckbxPATSinit.setBounds(288, 44, 194, 25);
+		paneConfiguration.add(chckbxPATSinit);
+
+		JButton btnNewButton = new JButton("Validate path accessibility");
+		btnNewButton.setBounds(14, 487, 468, 25);
+		paneConfiguration.add(btnNewButton);
+
+		JLabel lblResultReportCheck = new JLabel("Result Report Check:");
+		lblResultReportCheck.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblResultReportCheck.setBounds(14, 537, 148, 16);
+		paneConfiguration.add(lblResultReportCheck);
+
+		JLabel lblEvery = new JLabel("Every");
+		lblEvery.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblEvery.setBounds(174, 537, 39, 16);
+		paneConfiguration.add(lblEvery);
+
+		txtReportCheckDuration = new JTextField();
+		txtReportCheckDuration.setText("30");
+		txtReportCheckDuration.setBounds(214, 534, 56, 22);
+		paneConfiguration.add(txtReportCheckDuration);
+		txtReportCheckDuration.setColumns(10);
+
+		JLabel lblMinutes = new JLabel("minutes");
+		lblMinutes.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblMinutes.setBounds(282, 537, 45, 16);
+		paneConfiguration.add(lblMinutes);
+
+		JLabel lblNewLabel_1 = new JLabel("Result Report");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel_1.setBounds(14, 420, 95, 16);
+		paneConfiguration.add(lblNewLabel_1);
+
+		txtResultReport = new JTextField();
+		txtResultReport.setText(Constants.defaultResultReportPath);
+		txtResultReport.setEnabled(false);
+		txtResultReport.setBounds(121, 415, 361, 22);
+		paneConfiguration.add(txtResultReport);
+		txtResultReport.setColumns(10);
+
+		chckbxResultReport = new JCheckBox("Set Default Path");
+		chckbxResultReport.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		chckbxResultReport.setSelected(true);
+		chckbxResultReport.setBounds(121, 446, 121, 25);
+		paneConfiguration.add(chckbxResultReport);
+
+		chckbxTestSuiteDefaultPath.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxTestSuiteDefaultPath.isSelected()) {
+					txtTestSuite.setEnabled(false);
+					txtTestSuite.setText(Constants.defaultTestsuiteFilePath);
+				} else {
+					txtTestSuite.setEnabled(true);
+				}
+			}
+		});
+
+		chckbxReceiptsDefaultPath.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxReceiptsDefaultPath.isSelected()) {
+					txtReceipts.setEnabled(false);
+					txtReceipts.setText(Constants.defaultReceiptFilesPath);
+				} else {
+					txtReceipts.setEnabled(true);
+				}
+			}
+		});
+
+		chckbxReceiptRulesDefaultPath.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxReceiptRulesDefaultPath.isSelected()) {
+					txtReceiptRules.setEnabled(false);
+					txtReceiptRules.setText(Constants.defaultReceiptRulesFilesPath);
+				} else {
+					txtReceiptRules.setEnabled(true);
+				}
+			}
+		});
+
+		chckbxTLOGDefaultPath.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxTLOGDefaultPath.isSelected()) {
+					txtTLOG.setEnabled(false);
+					txtTLOG.setText(Constants.defaultTLogFilesPath);
+				} else {
+					txtTLOG.setEnabled(true);
+				}
+			}
+		});
+
+		chckbxTLOGRulesDefaultPath.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxTLOGRulesDefaultPath.isSelected()) {
+					txtTLOGRules.setEnabled(false);
+					txtTLOGRules.setText(Constants.defaultTLogRuleFilesPath);
+				} else {
+					txtTLOGRules.setEnabled(true);
+				}
+			}
+		});
+
+		chckbxPATSInitDefaultPath.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxPATSInitDefaultPath.isSelected()) {
+					txtPATSinit.setEnabled(false);
+					txtPATSinit.setText(Constants.defaultPATSinitFilePath);
+				} else {
+					txtPATSinit.setEnabled(true);
+				}
+			}
+		});
+
+		chckbxResultReport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxResultReport.isSelected()) {
+					txtResultReport.setEnabled(false);
+					txtResultReport.setText(Constants.defaultResultReportPath);
+				} else {
+					txtResultReport.setEnabled(true);
+				}
+			}
+		});
+
+		JPanel panelLogs = new JPanel();
+		tabbedPane.addTab("Logs", null, panelLogs, null);
+		panelLogs.setLayout(null);
+		JScrollPane spLogs = new JScrollPane();
+		spLogs.setBounds(12, 38, 506, 535);
+		panelLogs.add(spLogs);
+
+		txtAreaLogs = new JTextArea();
+		spLogs.setViewportView(txtAreaLogs);
+		txtAreaLogs.setEditable(false);
+		txtAreaLogs.setLineWrap(true);
+		PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
+
+		JLabel lblRuntimeLogs = new JLabel("Runtime logs:");
+		lblRuntimeLogs.setBounds(12, 13, 79, 16);
+		panelLogs.add(lblRuntimeLogs);
+
+		JButton btnClearLogs = new JButton("Clear Logs");
+		btnClearLogs.setBounds(413, 9, 105, 25);
+		panelLogs.add(btnClearLogs);
+
 		btnClearLogs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					txtAreaLogs.getDocument().remove(0, txtAreaLogs.getDocument().getLength());
 				} catch (BadLocationException e1) {
 					e1.printStackTrace();
-				};
+				}
+				;
 			}
 		});
-		
-		mntmClose.addActionListener(new ActionListener() {
+		// PrintStream standardout = System.out;
+		System.setOut(printStream);
+		System.setErr(printStream);
+
+		frmAttDriver.getContentPane().setLayout(groupLayout);
+
+		JMenuBar menuBar = new JMenuBar();
+		frmAttDriver.setJMenuBar(menuBar);
+
+		JMenu mnFile = new JMenu("File");
+		menuBar.add(mnFile);
+
+		JMenuItem mntmSaveLogs = new JMenuItem("Save Logs");
+		mnFile.add(mntmSaveLogs);
+
+		JMenuItem mntmExit = new JMenuItem("Exit");
+
+		mnFile.add(mntmExit);
+
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mnHelp.add(mntmAbout);
+
+		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				System.exit(JFrame.EXIT_ON_CLOSE);
 			}
 		});
 	}
-	
+
 	/**
-     * Prints log statements in the text area
-     */
-    private void printLog() {
-        Thread thread = new Thread(new Runnable() {
-            //@Override
-            public void run() {
+	 * Prints log statements in the text area
+	 */
+	private void printLog() {
+		Thread thread = new Thread(new Runnable() {
+			// @Override
+			public void run() {
 
 				String filePath = "", testCasesResult = "";
-				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.startProcessText);
+				System.out.println(
+						Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + Constants.startProcessText);
 				if (txtTestPlanID.getText().equals("")) {
-					System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.testPlanIDMandate);
+					System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+							+ Constants.testPlanIDMandate);
+					JOptionPane.showMessageDialog(txtTestPlanID, Constants.testPlanIDMandate);
 				} else {
+					Initilizer.AD.createFilesForAttachmentsofTestCases(txtTestPlanID.getText());
+//					testCasesResult = Initilizer.wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
+//					if (testCasesResult.equals(Constants.invalidTestPlanID)
+//							|| testCasesResult.equals(Constants.jamaConnectivityIssue)
+//							|| testCasesResult.equals(Constants.webservicesError)) {
+//						System.out.println(
+//								Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + testCasesResult);
+//						JOptionPane.showMessageDialog(txtTestPlanID,testCasesResult);
+//					} else {
+					// Below try catch block will create test suite xml file
 
-					testCasesResult = wsp.getTestcaseFromTestPlan(txtTestPlanID.getText());
-					if (testCasesResult.equals(Constants.invalidTestPlanID)
-							|| testCasesResult.equals(Constants.jamaConnectivityIssue)|| testCasesResult.equals(Constants.webservicesError)) {
-						System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+testCasesResult);
-					} else {
-						// Below try catch block will create test suite xml file
-						try {
-					
-							InetAddress addr = InetAddress.getLocalHost();
-							filePath = "C:\\Users\\" + addr.getHostName().substring(5).toLowerCase()
-									+ "\\OneDrive - Verifone\\Desktop\\TestSuite.xml";
-							// logger.info("System name is " +
-							// addr.getHostName().substring(5).toLowerCase());
-							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+"Trying to create test suite in the path: "+filePath);
-							status = fm.createXMLFile(filePath);
-							if (status.equals(Constants.unableToDeleteTestSuite)) {
-								System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+status);
-							} else {
-								System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+status);
-								// This try catch block will add the test case tag to the test suite xml
-								try {
-									status = fm.addTestCasesTag(filePath);
-									if (status.equals(Constants.testcaseTagAdded)) {
-										System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+status);
-										try {
-											System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+fm.addTestCasesToTestSuite(testCasesResult, filePath));
-										} catch (IOException e1) {
-											System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.unableToAddTestcase);
-										}
-
-									} else {
-										System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.testcaseTagNotAdded);
-									}
-								} catch (IOException e1) {
-									System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.testcaseTagNotAdded);
-								}
-							}
-
-						} catch (IOException e1) {
-							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.unableToCreateTestSuite);
-						}
-					}
 				}
-				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())+Constants.endOfProcessText);
-			
-            }
-        });
-        thread.start();
-    }
+//				}
+				System.out.println(
+						Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + Constants.endOfProcessText);
+			}
+		});
+		thread.start();
+	}
 }

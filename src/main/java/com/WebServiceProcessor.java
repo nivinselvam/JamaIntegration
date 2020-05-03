@@ -19,7 +19,7 @@ public class WebServiceProcessor {
 	String responseString;
 	ResponseBody body;
 	Response response;
-	String testplan, status, itemName, fileName;
+	String testplan, status, itemName, fileName, testplanName, testCycleName, attachmentName, attachmentContent, consolidatedTestCases;
 	Pattern pattern;
 	Matcher match;
 
@@ -170,7 +170,7 @@ public class WebServiceProcessor {
 		fileName = "";
 		response = RestAssured.get(baseURL + "abstractitems/" + itemID);
 		body = response.getBody();
-		pattern = Pattern.compile("\"fileName\":\"[\\w|\\s]*");
+		pattern = Pattern.compile("\"fileName\":\"[\\w|\\s|-]*");
 		match = pattern.matcher(body.asString());
 		if (match.find()) {
 			fileName = match.group().substring(12);
@@ -183,7 +183,8 @@ public class WebServiceProcessor {
 
 	public String getAttachmentFileNameWithoutWebService(String response) {
 		fileName = "";
-		pattern = Pattern.compile("\"fileName\":\"[\\w|\\s]*");
+		pattern = Pattern.compile("\"fileName\":\"[\\w|\\s|-]*");
+		String resp = body.asString();
 		match = pattern.matcher(body.asString());
 		if (match.find()) {
 			fileName = match.group().substring(12);
@@ -195,20 +196,15 @@ public class WebServiceProcessor {
 	}
 
 	public String getTestcaseFromTestPlan(String testplan) {
-		String testplanName, testCycleName, attachmentName, consolidatedTestCases = "";
 		int downloadedTcCount = 0;
 		status = Constants.invalidTestPlanID;
 		try {
 			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
 				status = Constants.webservicesError;
-				// testplanName = getItemName(testplan);
 				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
-					// testCycleName = getItemName(currentTestCycle);
 					for (String currentAttachment : getAttachmentsInTestCase(currentTestCase)) {
-						attachmentName = getItemName(currentAttachment);
-						System.out.println("Attachment name is" + attachmentName);
-						consolidatedTestCases = consolidatedTestCases + "\n\n"
-								+ getAttachmentContent(currentAttachment);
+						attachmentContent = getAttachmentContent(currentAttachment);
+						consolidatedTestCases = consolidatedTestCases + "\n\n" + attachmentContent;
 						downloadedTcCount = downloadedTcCount + 1;
 						Initilizer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
 					}
@@ -225,4 +221,7 @@ public class WebServiceProcessor {
 		}
 
 	}
+
+
+	
 }
