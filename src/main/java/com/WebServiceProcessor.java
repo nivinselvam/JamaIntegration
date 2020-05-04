@@ -82,7 +82,7 @@ public class WebServiceProcessor {
 		if (match.find()) {
 			testCaseCount = Integer.parseInt(match.group().substring(15));
 		}
-		Initilizer.GUI.lblAvailableTcValue.setText(String.valueOf(testCaseCount));
+		Initializer.GUI.lblAvailableTcValue.setText(String.valueOf(testCaseCount));
 		String[] testCaseIDs = new String[testCaseCount];
 		pattern = Pattern.compile("\"testCase\":\\w*");
 		match = pattern.matcher(body.asString());
@@ -206,7 +206,7 @@ public class WebServiceProcessor {
 						attachmentContent = getAttachmentContent(currentAttachment);
 						consolidatedTestCases = consolidatedTestCases + "\n\n" + attachmentContent;
 						downloadedTcCount = downloadedTcCount + 1;
-						Initilizer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
+						Initializer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
 					}
 				}
 			}

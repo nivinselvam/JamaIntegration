@@ -1,5 +1,6 @@
 package com;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -16,12 +17,12 @@ public class AttachmentDownloader {
 		int downloadedTcCount = 0;
 		status = Constants.invalidTestPlanID;
 		try {
-			for (String currentTestCycle : Initilizer.wsp.getTestCyclesFromTestPlan(testplan)) {
+			for (String currentTestCycle : Initializer.wsp.getTestCyclesFromTestPlan(testplan)) {
 				status = Constants.webservicesError;
-				for (String currentTestCase : Initilizer.wsp.getTestCasesFromTestCycle(currentTestCycle)) {
-					for (String currentAttachment : Initilizer.wsp.getAttachmentsInTestCase(currentTestCase)) {
-						attachmentName = Initilizer.wsp.getAttachmentFileName(currentAttachment);
-						attachmentContent = Initilizer.wsp.getAttachmentContent(currentAttachment);
+				for (String currentTestCase : Initializer.wsp.getTestCasesFromTestCycle(currentTestCycle)) {
+					for (String currentAttachment : Initializer.wsp.getAttachmentsInTestCase(currentTestCase)) {
+						attachmentName = Initializer.wsp.getAttachmentFileName(currentAttachment);
+						attachmentContent = Initializer.wsp.getAttachmentContent(currentAttachment);
 						if (attachmentName.contains(Constants.testsuiteFileNamePrefix)) {
 							consolidatedTestCases = consolidatedTestCases + "\n\n" + attachmentContent;
 						} else {
@@ -29,7 +30,7 @@ public class AttachmentDownloader {
 						}
 					}
 					downloadedTcCount = downloadedTcCount + 1;
-					Initilizer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
+					Initializer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
 				}
 			}
 			if (consolidatedTestCases.equals("")) {
@@ -43,10 +44,10 @@ public class AttachmentDownloader {
 			if (e.toString().contains("java.net.UnknownHostException")) {
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 						+ Constants.jamaConnectivityIssue);
-				JOptionPane.showMessageDialog(Initilizer.GUI.txtAreaLogs, Constants.jamaConnectivityIssue);
+				JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.jamaConnectivityIssue);
 			} else {
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + status);
-				JOptionPane.showMessageDialog(Initilizer.GUI.txtAreaLogs, status);
+				JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, status);
 			}
 
 		}
@@ -58,31 +59,31 @@ public class AttachmentDownloader {
 		pattern = Pattern.compile(Constants.receiptFileNamePrefix);
 		matcher = pattern.matcher(attachmentName);
 		if (matcher.find()) {
-			Initilizer.fm.createTextFile(attachmentContent, Initilizer.GUI.txtReceipts.getText() + fileName);
+			Initializer.fm.createTextFile(attachmentContent, Initializer.GUI.txtReceipts.getText() + fileName);
 			System.out.println("Attachment file " + attachmentName + ".txt was saved to the path: "
-					+ Initilizer.GUI.txtReceipts.getText());
+					+ Initializer.GUI.txtReceipts.getText());
 		} else {
 			pattern = Pattern.compile(Constants.receiptRulesFileNamePrefix);
 			matcher = pattern.matcher(attachmentName);
 			if (matcher.find()) {
-				Initilizer.fm.createTextFile(attachmentContent, Initilizer.GUI.txtReceiptRules.getText() + fileName);
+				Initializer.fm.createTextFile(attachmentContent, Initializer.GUI.txtReceiptRules.getText() + fileName);
 				System.out.println("Attachment file " + attachmentName + ".txt was saved to the path: "
-						+ Initilizer.GUI.txtReceipts.getText());
+						+ Initializer.GUI.txtReceipts.getText());
 			} else {
 				pattern = Pattern.compile(Constants.tLogFileNamePrefix);
 				matcher = pattern.matcher(attachmentName);
 				if (matcher.find()) {
-					Initilizer.fm.createTextFile(attachmentContent, Initilizer.GUI.txtTLOG.getText() + fileName);
+					Initializer.fm.createTextFile(attachmentContent, Initializer.GUI.txtTLOG.getText() + fileName);
 					System.out.println("Attachment file " + attachmentName + ".txt was saved to the path: "
-							+ Initilizer.GUI.txtTLOG.getText());
+							+ Initializer.GUI.txtTLOG.getText());
 				} else {
 					pattern = Pattern.compile(Constants.tLogRulesFileNamePrefix,Pattern.CASE_INSENSITIVE);
 					matcher = pattern.matcher(attachmentName);
 					if (matcher.find()) {
-						Initilizer.fm.createTextFile(attachmentContent,
-								Initilizer.GUI.txtTLOGRules.getText() + fileName);
+						Initializer.fm.createTextFile(attachmentContent,
+								Initializer.GUI.txtTLOGRules.getText() + fileName);
 						System.out.println("Attachment file " + attachmentName + ".txt was saved to the path: "
-								+ Initilizer.GUI.txtTLOGRules.getText());
+								+ Initializer.GUI.txtTLOGRules.getText());
 					}
 				}
 			}
@@ -92,36 +93,36 @@ public class AttachmentDownloader {
 	public void saveTestSuiteFile() {
 		fileName = "\\TestSuite.xml";
 		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
-				+ "Trying to create test suite in the path: " + Initilizer.GUI.txtTestSuite.getText() + fileName);
+				+ "Trying to create test suite in the path: " + Initializer.GUI.txtTestSuite.getText() + fileName);
 
 		try {
-			status = Initilizer.fm.createXMLFile(Initilizer.GUI.txtTestSuite.getText() + fileName);
+			status = Initializer.fm.createXMLFile(Initializer.GUI.txtTestSuite.getText() + fileName);
 			if (status.equals(Constants.unableToDeleteTestSuite)) {
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + status);
-				JOptionPane.showMessageDialog(Initilizer.GUI.txtTestPlanID, status);
+				JOptionPane.showMessageDialog(Initializer.GUI.txtTestPlanID, status);
 			} else {
 				// This try catch block will add the test case tag to the test suite xml
 				try {
-					status = Initilizer.fm.addTestCasesTag(Initilizer.GUI.txtTestSuite.getText() + fileName);
+					status = Initializer.fm.addTestCasesTag(Initializer.GUI.txtTestSuite.getText() + fileName);
 					if (status.equals(Constants.testcaseTagAdded)) {
 						System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + status);
 						try {
 							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
-									+ Initilizer.fm.addTestCasesToTestSuite(this.consolidatedTestCases,
-											Initilizer.GUI.txtTestSuite.getText() + fileName));
+									+ Initializer.fm.addTestCasesToTestSuite(this.consolidatedTestCases,
+											Initializer.GUI.txtTestSuite.getText() + fileName));
 						} catch (IOException e1) {
-							JOptionPane.showMessageDialog(Initilizer.GUI.txtAreaLogs, Constants.unableToAddTestcase);
+							JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.unableToAddTestcase);
 							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 									+ Constants.unableToAddTestcase);
 						}
 
 					} else {
-						JOptionPane.showMessageDialog(Initilizer.GUI.txtAreaLogs, Constants.testcaseTagNotAdded);
+						JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.testcaseTagNotAdded);
 						System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 								+ Constants.testcaseTagNotAdded);
 					}
 				} catch (IOException e1) {
-					JOptionPane.showMessageDialog(Initilizer.GUI.txtAreaLogs, Constants.testcaseTagNotAdded);
+					JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.testcaseTagNotAdded);
 					System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 							+ Constants.testcaseTagNotAdded);
 				}
@@ -130,7 +131,7 @@ public class AttachmentDownloader {
 		} catch (IOException e1) {
 			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 					+ Constants.unableToCreateTestSuite);
-			JOptionPane.showMessageDialog(Initilizer.GUI.txtAreaLogs, Constants.unableToCreateTestSuite);
+			JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.unableToCreateTestSuite);
 		}
 		consolidatedTestCases = "";
 	}
