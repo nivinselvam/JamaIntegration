@@ -43,7 +43,7 @@ public class WebServiceProcessor {
 	 * as String array
 	 */
 	public String[] getTestCyclesFromTestPlan(String testPlanID) {
-		int positionOfResultCount, testCycleCount = 0, i = 0;
+		int testCycleCount = 0, i = 0;
 		response = RestAssured.get(baseURL + "testplans/" + testPlanID + "/testcycles");
 		body = response.getBody();
 		pattern = Pattern.compile("\"totalResults\":\\d{1,}");
@@ -74,7 +74,7 @@ public class WebServiceProcessor {
 	 * as String array
 	 */
 	public String[] getTestCasesFromTestCycle(String testCycleID) {
-		int positionOfResultCount, testCaseCount = 0, i = 0;
+		int testCaseCount = 0, i = 0;
 		response = RestAssured.get(baseURL + "testcycles/" + testCycleID + "/testruns");
 		body = response.getBody();
 		pattern = Pattern.compile("\"totalResults\":\\d{1,}");
@@ -107,7 +107,7 @@ public class WebServiceProcessor {
 	 * the attachment ids and not the contents of the attachment
 	 */
 	public String[] getAttachmentsInTestCase(String testCaseID) {
-		int positionOfResultCount, attachmentsCount = 0, i = 0;
+		int attachmentsCount = 0, i = 0;
 		response = RestAssured.get(baseURL + "items/" + testCaseID + "/attachments");
 		body = response.getBody();
 		pattern = Pattern.compile("\"totalResults\":\\d{1,}");

@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JProgressBar;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class WindowGUI {
 
@@ -31,7 +32,7 @@ public class WindowGUI {
 	public JFormattedTextField txtTestPlanID;
 	public JLabel lblDownloadedTcValue;
 	public JLabel lblAvailableTcValue;
-	String status;
+	public String status;
 	public JTextField txtReceiptRules;
 	public JTextField txtTLOG;
 	public JTextField txtTLOGRules;
@@ -47,7 +48,6 @@ public class WindowGUI {
 	private JCheckBox chckbxTLOGDefaultPath;
 	private JCheckBox chckbxTLOGRulesDefaultPath;
 	private JCheckBox chckbxPATSInitDefaultPath;
-	private JTextField txtReportCheckDuration;
 	private JCheckBox chckbxResultReport;
 	private JButton btnInitiatePatsExecution;
 	public JTextField txtPATSfileName;
@@ -66,7 +66,7 @@ public class WindowGUI {
 	private void initialize() {
 		frmAttDriver = new JFrame();
 		frmAttDriver.setTitle("ATT Driver");
-		frmAttDriver.setBounds(100, 100, 570, 751);
+		frmAttDriver.setBounds(100, 100, 566, 751);
 		frmAttDriver.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -143,184 +143,163 @@ public class WindowGUI {
 		paneConfiguration.setLayout(null);
 
 		JLabel lblTestsuite = new JLabel("TestSuite");
-		lblTestsuite.setBounds(13, 154, 77, 16);
+		lblTestsuite.setBounds(14, 175, 77, 16);
 		paneConfiguration.add(lblTestsuite);
 		lblTestsuite.setFont(new Font("Tahoma", Font.BOLD, 13));
 
 		txtTestSuite = new JTextField();
 		txtTestSuite.setText(Constants.defaultTestsuiteFilePath);
 		txtTestSuite.setEnabled(false);
-		txtTestSuite.setBounds(120, 151, 361, 22);
+		txtTestSuite.setBounds(121, 172, 361, 22);
 		paneConfiguration.add(txtTestSuite);
 		txtTestSuite.setColumns(10);
 
 		JLabel lblReceipts = new JLabel("Receipts");
-		lblReceipts.setBounds(13, 225, 56, 16);
+		lblReceipts.setBounds(14, 246, 56, 16);
 		paneConfiguration.add(lblReceipts);
 		lblReceipts.setFont(new Font("Tahoma", Font.BOLD, 13));
 
 		txtReceipts = new JTextField();
 		txtReceipts.setText(Constants.defaultReceiptFilesPath);
 		txtReceipts.setEnabled(false);
-		txtReceipts.setBounds(120, 222, 361, 22);
+		txtReceipts.setBounds(121, 243, 361, 22);
 		paneConfiguration.add(txtReceipts);
 		txtReceipts.setColumns(10);
 
 		chckbxReceiptsDefaultPath = new JCheckBox("Set Default Path");
 
 		chckbxReceiptsDefaultPath.setSelected(true);
-		chckbxReceiptsDefaultPath.setBounds(120, 253, 121, 25);
+		chckbxReceiptsDefaultPath.setBounds(121, 274, 121, 25);
 		paneConfiguration.add(chckbxReceiptsDefaultPath);
 		chckbxReceiptsDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
 		JLabel lblReceiptRules = new JLabel("Receipt Rules");
-		lblReceiptRules.setBounds(13, 297, 95, 16);
+		lblReceiptRules.setBounds(14, 318, 95, 16);
 		paneConfiguration.add(lblReceiptRules);
 		lblReceiptRules.setFont(new Font("Tahoma", Font.BOLD, 13));
 
 		txtReceiptRules = new JTextField();
 		txtReceiptRules.setText(Constants.defaultReceiptRulesFilesPath);
 		txtReceiptRules.setEnabled(false);
-		txtReceiptRules.setBounds(120, 291, 361, 22);
+		txtReceiptRules.setBounds(121, 312, 361, 22);
 		paneConfiguration.add(txtReceiptRules);
 		txtReceiptRules.setColumns(10);
 
 		chckbxReceiptRulesDefaultPath = new JCheckBox("Set Default Path");
 		chckbxReceiptRulesDefaultPath.setSelected(true);
-		chckbxReceiptRulesDefaultPath.setBounds(120, 322, 121, 25);
+		chckbxReceiptRulesDefaultPath.setBounds(121, 343, 121, 25);
 		paneConfiguration.add(chckbxReceiptRulesDefaultPath);
 		chckbxReceiptRulesDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
 		JLabel lblTlog = new JLabel("TLOG");
-		lblTlog.setBounds(13, 361, 56, 16);
+		lblTlog.setBounds(14, 382, 56, 16);
 		paneConfiguration.add(lblTlog);
 		lblTlog.setFont(new Font("Tahoma", Font.BOLD, 13));
 
 		txtTLOG = new JTextField();
 		txtTLOG.setText(Constants.defaultTLogFilesPath);
 		txtTLOG.setEnabled(false);
-		txtTLOG.setBounds(120, 358, 361, 22);
+		txtTLOG.setBounds(121, 379, 361, 22);
 		paneConfiguration.add(txtTLOG);
 		txtTLOG.setColumns(10);
 
 		chckbxTLOGDefaultPath = new JCheckBox("Set Default Path");
 		chckbxTLOGDefaultPath.setSelected(true);
-		chckbxTLOGDefaultPath.setBounds(120, 389, 121, 25);
+		chckbxTLOGDefaultPath.setBounds(121, 410, 121, 25);
 		paneConfiguration.add(chckbxTLOGDefaultPath);
 		chckbxTLOGDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
 		JLabel lblTlogRules = new JLabel("TLOG Rules");
-		lblTlogRules.setBounds(12, 421, 77, 16);
+		lblTlogRules.setBounds(13, 442, 77, 16);
 		paneConfiguration.add(lblTlogRules);
 		lblTlogRules.setFont(new Font("Tahoma", Font.BOLD, 13));
 
 		txtTLOGRules = new JTextField();
 		txtTLOGRules.setText(Constants.defaultTLogRuleFilesPath);
 		txtTLOGRules.setEnabled(false);
-		txtTLOGRules.setBounds(119, 418, 362, 22);
+		txtTLOGRules.setBounds(120, 439, 362, 22);
 		paneConfiguration.add(txtTLOGRules);
 		txtTLOGRules.setColumns(10);
 
 		chckbxTLOGRulesDefaultPath = new JCheckBox("Set Default Path");
 		chckbxTLOGRulesDefaultPath.setSelected(true);
-		chckbxTLOGRulesDefaultPath.setBounds(120, 449, 121, 25);
+		chckbxTLOGRulesDefaultPath.setBounds(121, 470, 121, 25);
 		paneConfiguration.add(chckbxTLOGRulesDefaultPath);
 		chckbxTLOGRulesDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
 		chckbxTestSuiteDefaultPath = new JCheckBox("Set Default Path");
 		chckbxTestSuiteDefaultPath.setSelected(true);
-		chckbxTestSuiteDefaultPath.setBounds(120, 182, 121, 25);
+		chckbxTestSuiteDefaultPath.setBounds(121, 203, 121, 25);
 		paneConfiguration.add(chckbxTestSuiteDefaultPath);
 		chckbxTestSuiteDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
 		JLabel lblNewLabel = new JLabel("PATS init file");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel.setBounds(13, 13, 80, 16);
+		lblNewLabel.setBounds(14, 34, 80, 16);
 		paneConfiguration.add(lblNewLabel);
 
 		txtPATSinit = new JTextField();
 		txtPATSinit.setText(Constants.defaultPATSinitFilePath);
 		txtPATSinit.setEnabled(false);
-		txtPATSinit.setBounds(120, 81, 361, 22);
+		txtPATSinit.setBounds(121, 102, 361, 22);
 		paneConfiguration.add(txtPATSinit);
 		txtPATSinit.setColumns(10);
 
 		chckbxPATSInitDefaultPath = new JCheckBox("Set Default Path");
 		chckbxPATSInitDefaultPath.setSelected(true);
 		chckbxPATSInitDefaultPath.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		chckbxPATSInitDefaultPath.setBounds(120, 112, 121, 25);
+		chckbxPATSInitDefaultPath.setBounds(121, 133, 121, 25);
 		paneConfiguration.add(chckbxPATSInitDefaultPath);
 
 		chckbxPATSinit = new JCheckBox("Initiate PATS automaticatically");
 		chckbxPATSinit.setSelected(true);
 		chckbxPATSinit.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		chckbxPATSinit.setBounds(287, 112, 194, 25);
+		chckbxPATSinit.setBounds(288, 133, 194, 25);
 		paneConfiguration.add(chckbxPATSinit);
 
 		JButton btnValidatePaths = new JButton("Validate path accessibility");
-		btnValidatePaths.setBounds(12, 552, 468, 25);
+		btnValidatePaths.setBounds(13, 573, 468, 25);
 		paneConfiguration.add(btnValidatePaths);
-
-		JLabel lblResultReportCheck = new JLabel("Result Report Check:");
-		lblResultReportCheck.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblResultReportCheck.setBounds(12, 590, 148, 16);
-		paneConfiguration.add(lblResultReportCheck);
-
-		JLabel lblEvery = new JLabel("Every");
-		lblEvery.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblEvery.setBounds(172, 590, 39, 16);
-		paneConfiguration.add(lblEvery);
-
-		txtReportCheckDuration = new JTextField();
-		txtReportCheckDuration.setText("30");
-		txtReportCheckDuration.setBounds(212, 587, 56, 22);
-		paneConfiguration.add(txtReportCheckDuration);
-		txtReportCheckDuration.setColumns(10);
-
-		JLabel lblMinutes = new JLabel("minutes");
-		lblMinutes.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblMinutes.setBounds(280, 590, 45, 16);
-		paneConfiguration.add(lblMinutes);
 
 		JLabel lblNewLabel_1 = new JLabel("Result Report");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblNewLabel_1.setBounds(13, 488, 95, 16);
+		lblNewLabel_1.setBounds(14, 509, 95, 16);
 		paneConfiguration.add(lblNewLabel_1);
 
 		txtResultReport = new JTextField();
 		txtResultReport.setText(Constants.defaultResultReportPath);
 		txtResultReport.setEnabled(false);
-		txtResultReport.setBounds(120, 483, 361, 22);
+		txtResultReport.setBounds(121, 504, 361, 22);
 		paneConfiguration.add(txtResultReport);
 		txtResultReport.setColumns(10);
 
 		chckbxResultReport = new JCheckBox("Set Default Path");
 		chckbxResultReport.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		chckbxResultReport.setSelected(true);
-		chckbxResultReport.setBounds(120, 514, 121, 25);
+		chckbxResultReport.setBounds(120, 535, 121, 25);
 		paneConfiguration.add(chckbxResultReport);
 		
 		txtPATSfileName = new JTextField();
 		txtPATSfileName.setEnabled(false);
 		txtPATSfileName.setText(Constants.defaultPATSinitFileName);
-		txtPATSfileName.setBounds(120, 46, 234, 22);
+		txtPATSfileName.setBounds(121, 67, 234, 22);
 		paneConfiguration.add(txtPATSfileName);
 		txtPATSfileName.setColumns(10);
 		
 		JLabel lblName = new JLabel("Name");
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblName.setBounds(52, 49, 38, 16);
+		lblName.setBounds(53, 70, 38, 16);
 		paneConfiguration.add(lblName);
 		
 		JLabel lblPath = new JLabel("Path");
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblPath.setBounds(55, 84, 35, 16);
+		lblPath.setBounds(56, 105, 35, 16);
 		paneConfiguration.add(lblPath);
 		
 		chckbxPATSfileDefaultName = new JCheckBox("Set Default Name");
 		chckbxPATSfileDefaultName.setSelected(true);
 		chckbxPATSfileDefaultName.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		chckbxPATSfileDefaultName.setBounds(356, 45, 125, 25);
+		chckbxPATSfileDefaultName.setBounds(357, 66, 125, 25);
 		paneConfiguration.add(chckbxPATSfileDefaultName);
 		
 		chckbxPATSfileDefaultName.addActionListener(new ActionListener() {
@@ -423,7 +402,9 @@ public class WindowGUI {
 		
 		btnInitiatePatsExecution.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Initializer.pi.initiatePATS();
+				if(Initializer.cv.validatePATSfile()) {
+					Initializer.pi.initiatePATS();
+				}			
 			}
 		});
 		
@@ -439,24 +420,46 @@ public class WindowGUI {
 
 		JPanel panelLogs = new JPanel();
 		tabbedPane.addTab("Logs", null, panelLogs, null);
-		panelLogs.setLayout(null);
 		JScrollPane spLogs = new JScrollPane();
-		spLogs.setBounds(12, 38, 506, 535);
-		panelLogs.add(spLogs);
-
-		txtAreaLogs = new JTextArea();
-		spLogs.setViewportView(txtAreaLogs);
-		txtAreaLogs.setEditable(false);
-		txtAreaLogs.setLineWrap(true);
-		PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
 
 		JLabel lblRuntimeLogs = new JLabel("Runtime logs:");
-		lblRuntimeLogs.setBounds(12, 13, 79, 16);
-		panelLogs.add(lblRuntimeLogs);
 
 		JButton btnClearLogs = new JButton("Clear Logs");
-		btnClearLogs.setBounds(413, 9, 105, 25);
-		panelLogs.add(btnClearLogs);
+				GroupLayout gl_panelLogs = new GroupLayout(panelLogs);
+				gl_panelLogs.setHorizontalGroup(
+					gl_panelLogs.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panelLogs.createSequentialGroup()
+							.addGap(12)
+							.addGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panelLogs.createSequentialGroup()
+									.addComponent(lblRuntimeLogs)
+									.addPreferredGap(ComponentPlacement.RELATED, 239, Short.MAX_VALUE)
+									.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
+								.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE))
+							.addContainerGap())
+				);
+				gl_panelLogs.setVerticalGroup(
+					gl_panelLogs.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panelLogs.createSequentialGroup()
+							.addGap(9)
+							.addGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panelLogs.createSequentialGroup()
+									.addGap(4)
+									.addComponent(lblRuntimeLogs))
+								.addGroup(gl_panelLogs.createSequentialGroup()
+									.addGap(1)
+									.addComponent(btnClearLogs)))
+							.addGap(9)
+							.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+							.addContainerGap())
+				);
+				
+						txtAreaLogs = new JTextArea();
+						spLogs.setViewportView(txtAreaLogs);
+						txtAreaLogs.setEditable(false);
+						txtAreaLogs.setLineWrap(true);
+						PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
+				panelLogs.setLayout(gl_panelLogs);
 
 		btnClearLogs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -499,7 +502,7 @@ public class WindowGUI {
 			}
 		});
 	}
-
+	
 	/**
 	 * Prints log statements in the text area
 	 */
@@ -515,7 +518,12 @@ public class WindowGUI {
 					JOptionPane.showMessageDialog(txtTestPlanID, Constants.testPlanIDMandate);
 				} else {
 					if(Initializer.cv.validatePaths()) {
-						Initializer.AD.createFilesForAttachmentsofTestCases(txtTestPlanID.getText());
+						if(Initializer.AD.createFilesForAttachmentsofTestCases(txtTestPlanID.getText())) {
+							Initializer.pi.initiatePATS();
+						}else {
+							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+							+ Constants.unableToInitiatePATS);
+						}
 					}					
 				}
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())

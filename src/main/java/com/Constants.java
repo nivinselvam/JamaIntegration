@@ -1,7 +1,6 @@
 package com;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public final class Constants {
@@ -18,6 +17,7 @@ public final class Constants {
 	public final static String tLogRulesFileNamePrefix = "TLOG-Rule[.]*";
 	public final static String testsuiteFileNamePrefix = "-TC-";
 	public final static String defaultPATSinitFileName = "PATSExecution";
+	public final static String defaultResultReportName = "Report-";
 	//Path where files will be saved
 	public final static String defaultReceiptFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipts";
 	public final static String defaultReceiptRulesFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipt-Rules";
@@ -53,4 +53,5 @@ public final class Constants {
 	public final static String fileDoesntExist = "File does not exist";
 	public final static String webservicesError = "Something went wrong while fetching the test cases from JAMA.";
 	public final static String noUpdateForTestSuite	= "No Data available to update the Testsuite";
+	public final static String unableToInitiatePATS = "PATS was not initiated since the file download had some issue";
 }

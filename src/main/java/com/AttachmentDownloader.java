@@ -1,6 +1,5 @@
 package com;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -12,9 +11,11 @@ public class AttachmentDownloader {
 	String status, attachmentContent, attachmentName, consolidatedTestCases = "", fileName;
 	Pattern pattern;
 	Matcher matcher;
+	boolean valid;
 
-	public void createFilesForAttachmentsofTestCases(String testplan) {
+	public boolean createFilesForAttachmentsofTestCases(String testplan) {
 		int downloadedTcCount = 0;
+		valid = false;
 		status = Constants.invalidTestPlanID;
 		try {
 			for (String currentTestCycle : Initializer.wsp.getTestCyclesFromTestPlan(testplan)) {
@@ -36,8 +37,9 @@ public class AttachmentDownloader {
 			if (consolidatedTestCases.equals("")) {
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 						+ Constants.noUpdateForTestSuite);
+				valid = false;
 			} else {
-				saveTestSuiteFile();
+				valid = saveTestSuiteFile();				
 			}
 
 		} catch (Exception e) {
@@ -45,13 +47,15 @@ public class AttachmentDownloader {
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 						+ Constants.jamaConnectivityIssue);
 				JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.jamaConnectivityIssue);
+				valid = false;
 			} else {
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + status);
 				JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, status);
+				valid = false;
 			}
 
 		}
-
+		return valid;
 	}
 
 	public void saveFile(String attachmentName, String attachmentContent) {
@@ -77,7 +81,7 @@ public class AttachmentDownloader {
 					System.out.println("Attachment file " + attachmentName + ".txt was saved to the path: "
 							+ Initializer.GUI.txtTLOG.getText());
 				} else {
-					pattern = Pattern.compile(Constants.tLogRulesFileNamePrefix,Pattern.CASE_INSENSITIVE);
+					pattern = Pattern.compile(Constants.tLogRulesFileNamePrefix, Pattern.CASE_INSENSITIVE);
 					matcher = pattern.matcher(attachmentName);
 					if (matcher.find()) {
 						Initializer.fm.createTextFile(attachmentContent,
@@ -90,16 +94,17 @@ public class AttachmentDownloader {
 		}
 	}
 
-	public void saveTestSuiteFile() {
+	public boolean saveTestSuiteFile() {
 		fileName = "\\TestSuite.xml";
+		valid = false;
 		System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 				+ "Trying to create test suite in the path: " + Initializer.GUI.txtTestSuite.getText() + fileName);
-
 		try {
 			status = Initializer.fm.createXMLFile(Initializer.GUI.txtTestSuite.getText() + fileName);
 			if (status.equals(Constants.unableToDeleteTestSuite)) {
 				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + status);
 				JOptionPane.showMessageDialog(Initializer.GUI.txtTestPlanID, status);
+				valid = false;
 			} else {
 				// This try catch block will add the test case tag to the test suite xml
 				try {
@@ -110,21 +115,25 @@ public class AttachmentDownloader {
 							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 									+ Initializer.fm.addTestCasesToTestSuite(this.consolidatedTestCases,
 											Initializer.GUI.txtTestSuite.getText() + fileName));
+							valid = true;
 						} catch (IOException e1) {
 							JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.unableToAddTestcase);
 							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 									+ Constants.unableToAddTestcase);
+							valid = false;
 						}
 
 					} else {
 						JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.testcaseTagNotAdded);
 						System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 								+ Constants.testcaseTagNotAdded);
+						valid = false;
 					}
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.testcaseTagNotAdded);
 					System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 							+ Constants.testcaseTagNotAdded);
+					valid = false;
 				}
 			}
 
@@ -132,8 +141,10 @@ public class AttachmentDownloader {
 			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 					+ Constants.unableToCreateTestSuite);
 			JOptionPane.showMessageDialog(Initializer.GUI.txtAreaLogs, Constants.unableToCreateTestSuite);
+			valid = false;
 		}
 		consolidatedTestCases = "";
+		return valid;
 	}
 
 }
