@@ -7,8 +7,10 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+import io.restassured.RestAssured;
+
 public class AttachmentDownloader {
-	String status, attachmentContent, attachmentName, consolidatedTestCases = "", fileName;
+	String status, attachmentContent, attachmentName, consolidatedTestCases = "", fileName, testcaseJSON;
 	Pattern pattern;
 	Matcher matcher;
 	boolean valid;
@@ -21,6 +23,8 @@ public class AttachmentDownloader {
 			for (String currentTestCycle : Initializer.wsp.getTestCyclesFromTestPlan(testplan)) {
 				status = Constants.webservicesError;
 				for (String currentTestCase : Initializer.wsp.getTestCasesFromTestCycle(currentTestCycle)) {
+					testcaseJSON = Initializer.wsp.getTestcaseDetails(currentTestCase);
+					Initializer.testcaseDetails.add(new TestCaseDetails(currentTestCase,getTestcaseDocumentKey(testcaseJSON) ,testcaseJSON, ""));
 					for (String currentAttachment : Initializer.wsp.getAttachmentsInTestCase(currentTestCase)) {
 						attachmentName = Initializer.wsp.getAttachmentFileName(currentAttachment);
 						attachmentContent = Initializer.wsp.getAttachmentContent(currentAttachment);
@@ -145,6 +149,19 @@ public class AttachmentDownloader {
 		}
 		consolidatedTestCases = "";
 		return valid;
+	}
+	
+	private String getTestcaseDocumentKey(String JSONData) {
+		pattern = Pattern.compile("\"documentKey\":\"[\\w]+-TC-[\\d]+\"");
+		matcher = pattern.matcher(JSONData);
+		if (matcher.find()) {
+			return matcher.group().substring(15, matcher.group().length() - 1);
+		} else {
+			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+					+ "This test case does not contain document key information");
+			return null;
+		}	
+		
 	}
 
 }

@@ -1,19 +1,29 @@
 package com;
 
 import javax.swing.JFrame;
+import javax.swing.ButtonGroup;
+import javax.swing.ComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Calendar;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.BadLocationException;
+
+import org.springframework.beans.factory.config.CustomEditorConfigurer;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -24,6 +34,8 @@ import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JProgressBar;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JComboBox;
+import javax.swing.JRadioButton;
 
 public class WindowGUI {
 
@@ -40,7 +52,9 @@ public class WindowGUI {
 	public JTextField txtTestSuite;
 	public JTextField txtPATSinit;
 	public JTextField txtResultReport;
-	private JCheckBox chckbxPATSinit;
+	public JComboBox cbxBuildMachine;
+	public JTextField txtBaseVersion;
+	public JCheckBox chckbxPATSinit;
 	private JCheckBox chckbxPATSfileDefaultName;
 	private JCheckBox chckbxTestSuiteDefaultPath;
 	private JCheckBox chckbxReceiptsDefaultPath;
@@ -49,8 +63,18 @@ public class WindowGUI {
 	private JCheckBox chckbxTLOGRulesDefaultPath;
 	private JCheckBox chckbxPATSInitDefaultPath;
 	private JCheckBox chckbxResultReport;
+	public JCheckBox chckbxAutoTriggerBuild;
 	private JButton btnInitiatePatsExecution;
+	private JButton btnTriggerBuild;
+	private JRadioButton rdbtnBaseBuild;
+	private JRadioButton rdbtnCrBuild;
+	private JButton btnDownloadAttachments;
+	private JComboBox cbxFEP;
 	public JTextField txtPATSfileName;
+	private JTextField txtCRnumber;
+	private JComboBox cbxAutomationMachines;
+	private InetAddress systemDetails;
+	private CustomComboCheckBox cbxNotificationList;
 
 	/**
 	 * Create the application.
@@ -101,9 +125,9 @@ public class WindowGUI {
 		txtTestPlanID.setBounds(119, 59, 201, 22);
 		panelMain.add(txtTestPlanID);
 
-		JButton btnOk = new JButton("Download Attachments");
-		btnOk.setBounds(332, 58, 186, 25);
-		panelMain.add(btnOk);
+		btnDownloadAttachments = new JButton("Download Attachments");
+		btnDownloadAttachments.setBounds(332, 58, 186, 25);
+		panelMain.add(btnDownloadAttachments);
 
 		JLabel lblAvailableTcField = new JLabel("Available Test Cases:");
 		lblAvailableTcField.setBounds(12, 110, 123, 16);
@@ -130,7 +154,7 @@ public class WindowGUI {
 		btnInitiatePatsExecution.setBounds(175, 306, 175, 25);
 		panelMain.add(btnInitiatePatsExecution);
 
-		btnOk.addActionListener(new ActionListener() {
+		btnDownloadAttachments.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lblAvailableTcValue.setText("");
 				lblDownloadedTcValue.setText("");
@@ -278,36 +302,36 @@ public class WindowGUI {
 		chckbxResultReport.setSelected(true);
 		chckbxResultReport.setBounds(120, 535, 121, 25);
 		paneConfiguration.add(chckbxResultReport);
-		
+
 		txtPATSfileName = new JTextField();
 		txtPATSfileName.setEnabled(false);
 		txtPATSfileName.setText(Constants.defaultPATSinitFileName);
 		txtPATSfileName.setBounds(121, 67, 234, 22);
 		paneConfiguration.add(txtPATSfileName);
 		txtPATSfileName.setColumns(10);
-		
+
 		JLabel lblName = new JLabel("Name");
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblName.setBounds(53, 70, 38, 16);
 		paneConfiguration.add(lblName);
-		
+
 		JLabel lblPath = new JLabel("Path");
 		lblPath.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblPath.setBounds(56, 105, 35, 16);
 		paneConfiguration.add(lblPath);
-		
+
 		chckbxPATSfileDefaultName = new JCheckBox("Set Default Name");
 		chckbxPATSfileDefaultName.setSelected(true);
 		chckbxPATSfileDefaultName.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		chckbxPATSfileDefaultName.setBounds(357, 66, 125, 25);
 		paneConfiguration.add(chckbxPATSfileDefaultName);
-		
+
 		chckbxPATSfileDefaultName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(chckbxPATSfileDefaultName.isSelected()) {
+				if (chckbxPATSfileDefaultName.isSelected()) {
 					txtPATSfileName.setEnabled(false);
 					txtPATSfileName.setText(Constants.defaultPATSinitFileName);
-				}else {
+				} else {
 					txtPATSfileName.setEnabled(true);
 				}
 			}
@@ -389,34 +413,204 @@ public class WindowGUI {
 				}
 			}
 		});
-		
+
 		chckbxPATSinit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(chckbxPATSinit.isSelected()) {
+				if (chckbxPATSinit.isSelected()) {
 					btnInitiatePatsExecution.setEnabled(false);
-				}else {
+				} else {
 					btnInitiatePatsExecution.setEnabled(true);
 				}
 			}
 		});
-		
+
 		btnInitiatePatsExecution.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(Initializer.cv.validatePATSfile()) {
+				if (Initializer.cv.validatePATSfile()) {
 					Initializer.pi.initiatePATS();
-				}			
+				}
 			}
 		});
-		
+
 		btnValidatePaths.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(Initializer.cv.validatePaths()) {
+				if (Initializer.cv.validatePaths()) {
 					System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 							+ "Configured paths are valid");
 					JOptionPane.showMessageDialog(txtAreaLogs, "Configured paths are valid");
 				}
 			}
 		});
+
+		JPanel pnTriggerBuild = new JPanel();
+		tabbedPane.addTab("Trigger build", null, pnTriggerBuild, null);
+
+		JLabel lblBuildMachine = new JLabel("Build Machine");
+		lblBuildMachine.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		String localMachineName = "";
+		try {
+			systemDetails = InetAddress.getLocalHost();
+			localMachineName = systemDetails.getHostName();
+		} catch (UnknownHostException e2) {
+			e2.printStackTrace();
+		}
+
+		String[] buildMachines = { "blr2wvcoverity1", "blr2wvcoverity2", "BLR2BUILDPC6", "BLR2BUILDPC7",
+				localMachineName };
+		cbxBuildMachine = new JComboBox(buildMachines);
+
+		JLabel lblBuildMachineName = new JLabel("Name");
+		lblBuildMachineName.setFont(new Font("Tahoma", Font.PLAIN, 13));
+
+		JLabel lblBuildDetails = new JLabel("Build Details");
+		lblBuildDetails.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		JButton btnBuildsRunningInfo = new JButton("Builds running info");
+		btnBuildsRunningInfo.setEnabled(false);
+
+		JLabel lblFep = new JLabel("FEP");
+		lblFep.setFont(new Font("Tahoma", Font.PLAIN, 13));
+
+		String[] FEPs = { "base", "bp", "bp_buypass", "buypass", "chevron", "citgo", "cop", "exxon", "fcb",
+				"generic_buypass", "generic_hps", "hps", "marathon", "nbs", "nts", "shell", "sinclair", "sunoco",
+				"tesoro", "testFep", "valero", "verifone_eps", "worldpay" };
+		cbxFEP = new JComboBox(FEPs);
+
+		JLabel lblType = new JLabel("Type");
+		lblType.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		rdbtnBaseBuild = new JRadioButton("Base build");
+
+		rdbtnBaseBuild.setSelected(true);
+		rdbtnCrBuild = new JRadioButton("CR build");
+		rdbtnCrBuild.setEnabled(false);
+
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(rdbtnCrBuild);
+		bg.add(rdbtnBaseBuild);
+
+		JLabel lblVersion = new JLabel("Version");
+		lblVersion.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		txtBaseVersion = new JTextField();
+		txtBaseVersion.setColumns(10);
+
+		JLabel lblCrNumber = new JLabel("CR Number");
+		lblCrNumber.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		txtCRnumber = new JTextField();
+		txtCRnumber.setEnabled(false);
+		txtCRnumber.setColumns(10);
+
+		btnTriggerBuild = new JButton("Trigger Build Manually");
+
+		btnTriggerBuild.setEnabled(false);
+
+		chckbxAutoTriggerBuild = new JCheckBox("Trigger Build Automatically as part of ATT Driver");
+
+		chckbxAutoTriggerBuild.setSelected(true);
+
+		JLabel lblAutomationMachine = new JLabel("Automation Machine");
+		lblAutomationMachine.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		JLabel lblName_1 = new JLabel("Name");
+		lblName_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
+
+		String[] automationMacines = { "BLR2PETROAUTO01" };
+		cbxAutomationMachines = new JComboBox(automationMacines);
+
+		JLabel lblNotificationList = new JLabel("Notification List");
+		lblNotificationList.setFont(new Font("Tahoma", Font.BOLD, 13));
+
+		JLabel lblMailId = new JLabel("Mail id");
+		lblMailId.setFont(new Font("Tahoma", Font.PLAIN, 13));
+
+		Vector vector = new Vector();
+		vector.add(new JCheckBox("nivins1", false));
+		vector.add(new JCheckBox("rania1", false));
+		vector.add(new JCheckBox("jenishp1", false));
+		vector.add(new JCheckBox("anbarasang1", false));
+		vector.add(new JCheckBox("petroauto", false));
+		// JComboBox cbxNotificationList = new JComboBox();
+		cbxNotificationList = new CustomComboCheckBox(vector);
+
+		JLabel lblverifonecom = new JLabel("@verifone.com");
+		GroupLayout gl_pnTriggerBuild = new GroupLayout(pnTriggerBuild);
+		gl_pnTriggerBuild.setHorizontalGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnTriggerBuild.createSequentialGroup().addContainerGap().addGroup(gl_pnTriggerBuild
+						.createParallelGroup(Alignment.LEADING).addComponent(lblBuildMachine)
+						.addComponent(lblAutomationMachine).addComponent(lblBuildDetails)
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblFep).addGap(58)
+								.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(rdbtnBaseBuild)
+												.addGap(38).addComponent(rdbtnCrBuild))
+										.addComponent(cbxFEP, GroupLayout.PREFERRED_SIZE, 423,
+												GroupLayout.PREFERRED_SIZE)))
+						.addComponent(lblType)
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblVersion).addGap(30)
+								.addComponent(txtBaseVersion, 423, 423, 423))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblCrNumber).addGap(12)
+								.addComponent(txtCRnumber, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(chckbxAutoTriggerBuild)
+								.addPreferredGap(ComponentPlacement.RELATED, 36,
+										Short.MAX_VALUE)
+								.addComponent(btnTriggerBuild))
+						.addComponent(lblNotificationList)
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGroup(gl_pnTriggerBuild
+								.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblMailId).addGap(42)
+										.addComponent(cbxNotificationList, GroupLayout.PREFERRED_SIZE, 265,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(0, 0, Short.MAX_VALUE))
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblName_1).addGap(46)
+										.addComponent(cbxAutomationMachines, GroupLayout.PREFERRED_SIZE, 266,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(0, 0, Short.MAX_VALUE))
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblBuildMachineName)
+										.addGap(48).addComponent(cbxBuildMachine, GroupLayout.PREFERRED_SIZE, 264,
+												GroupLayout.PREFERRED_SIZE)))
+								.addGap(18)
+								.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblverifonecom).addComponent(btnBuildsRunningInfo))))
+						.addContainerGap()));
+		gl_pnTriggerBuild.setVerticalGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnTriggerBuild.createSequentialGroup().addContainerGap().addComponent(lblBuildMachine)
+						.addGap(16)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblBuildMachineName)
+								.addComponent(cbxBuildMachine, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnBuildsRunningInfo))
+						.addGap(18).addComponent(lblAutomationMachine).addGap(18)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblName_1)
+								.addComponent(cbxAutomationMachines, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(18).addComponent(lblNotificationList).addGap(18)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblMailId)
+								.addComponent(cbxNotificationList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblverifonecom))
+						.addGap(23).addComponent(lblBuildDetails).addGap(18)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblFep)
+								.addComponent(cbxFEP, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(18)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblType)
+								.addComponent(rdbtnBaseBuild).addComponent(rdbtnCrBuild))
+						.addGap(18)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblVersion)
+								.addComponent(txtBaseVersion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(18)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblCrNumber)
+								.addComponent(txtCRnumber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
+						.addGap(27)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE)
+								.addComponent(chckbxAutoTriggerBuild).addComponent(btnTriggerBuild))
+						.addContainerGap(150, Short.MAX_VALUE)));
+		pnTriggerBuild.setLayout(gl_pnTriggerBuild);
 
 		JPanel panelLogs = new JPanel();
 		tabbedPane.addTab("Logs", null, panelLogs, null);
@@ -425,41 +619,29 @@ public class WindowGUI {
 		JLabel lblRuntimeLogs = new JLabel("Runtime logs:");
 
 		JButton btnClearLogs = new JButton("Clear Logs");
-				GroupLayout gl_panelLogs = new GroupLayout(panelLogs);
-				gl_panelLogs.setHorizontalGroup(
-					gl_panelLogs.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panelLogs.createSequentialGroup()
-							.addGap(12)
-							.addGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_panelLogs.createSequentialGroup()
-									.addComponent(lblRuntimeLogs)
-									.addPreferredGap(ComponentPlacement.RELATED, 239, Short.MAX_VALUE)
-									.addComponent(btnClearLogs, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
-								.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE))
-							.addContainerGap())
-				);
-				gl_panelLogs.setVerticalGroup(
-					gl_panelLogs.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panelLogs.createSequentialGroup()
-							.addGap(9)
-							.addGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_panelLogs.createSequentialGroup()
-									.addGap(4)
-									.addComponent(lblRuntimeLogs))
-								.addGroup(gl_panelLogs.createSequentialGroup()
-									.addGap(1)
-									.addComponent(btnClearLogs)))
-							.addGap(9)
-							.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
-							.addContainerGap())
-				);
-				
-						txtAreaLogs = new JTextArea();
-						spLogs.setViewportView(txtAreaLogs);
-						txtAreaLogs.setEditable(false);
-						txtAreaLogs.setLineWrap(true);
-						PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
-				panelLogs.setLayout(gl_panelLogs);
+		GroupLayout gl_panelLogs = new GroupLayout(panelLogs);
+		gl_panelLogs.setHorizontalGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING).addGroup(gl_panelLogs
+				.createSequentialGroup().addGap(12)
+				.addGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panelLogs.createSequentialGroup().addComponent(lblRuntimeLogs)
+								.addPreferredGap(ComponentPlacement.RELATED, 239, Short.MAX_VALUE).addComponent(
+										btnClearLogs, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE))
+						.addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE))
+				.addContainerGap()));
+		gl_panelLogs.setVerticalGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelLogs.createSequentialGroup().addGap(9)
+						.addGroup(gl_panelLogs.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panelLogs.createSequentialGroup().addGap(4).addComponent(lblRuntimeLogs))
+								.addGroup(gl_panelLogs.createSequentialGroup().addGap(1).addComponent(btnClearLogs)))
+						.addGap(9).addComponent(spLogs, GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+						.addContainerGap()));
+
+		txtAreaLogs = new JTextArea();
+		spLogs.setViewportView(txtAreaLogs);
+		txtAreaLogs.setEditable(false);
+		txtAreaLogs.setLineWrap(true);
+		PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
+		panelLogs.setLayout(gl_panelLogs);
 
 		btnClearLogs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -471,6 +653,42 @@ public class WindowGUI {
 				;
 			}
 		});
+
+		chckbxAutoTriggerBuild.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxAutoTriggerBuild.isSelected()) {
+					btnTriggerBuild.setEnabled(false);
+				} else {
+					btnTriggerBuild.setEnabled(true);
+				}
+			}
+		});
+
+		rdbtnCrBuild.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (rdbtnCrBuild.isSelected()) {
+					txtCRnumber.setEnabled(true);
+				}
+			}
+		});
+
+		rdbtnBaseBuild.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (rdbtnBaseBuild.isSelected()) {
+					txtCRnumber.setEnabled(false);
+				}
+			}
+		});
+
+		btnTriggerBuild.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (Initializer.cv.validateBuildMachinePath()) {
+					triggerBuild();
+				}
+			}
+
+		});
+
 		// PrintStream standardout = System.out;
 		System.setOut(printStream);
 		System.setErr(printStream);
@@ -502,7 +720,7 @@ public class WindowGUI {
 			}
 		});
 	}
-	
+
 	/**
 	 * Prints log statements in the text area
 	 */
@@ -510,26 +728,60 @@ public class WindowGUI {
 		Thread thread = new Thread(new Runnable() {
 			// @Override
 			public void run() {
-				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
-								+ Constants.startProcessText);
+				btnDownloadAttachments.setEnabled(false);
+				System.out.println(
+						Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + Constants.startProcessText);
 				if (txtTestPlanID.getText().equals("")) {
 					System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 							+ Constants.testPlanIDMandate);
 					JOptionPane.showMessageDialog(txtTestPlanID, Constants.testPlanIDMandate);
 				} else {
-					if(Initializer.cv.validatePaths()) {
-						if(Initializer.AD.createFilesForAttachmentsofTestCases(txtTestPlanID.getText())) {
+					if (Initializer.cv.validatePaths()) {
+						if (Initializer.AD.createFilesForAttachmentsofTestCases(txtTestPlanID.getText())) {
 							Initializer.pi.initiatePATS();
-						}else {
+							if (chckbxAutoTriggerBuild.isSelected()) {
+								triggerBuild();
+							}
+						} else {
 							System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
-							+ Constants.unableToInitiatePATS);
+									+ Constants.unableToInitiatePATS);
 						}
-					}					
+					}
 				}
-				System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
-								+  Constants.endOfProcessText);
+				Initializer.dm.monitorDirectory();
+				for (TestCaseDetails tcd : Initializer.testcaseDetails) {
+					System.out.println(tcd.getTestcaseID() + "-" + tcd.getTestcaseDocumentKey() + "-"
+							+ tcd.getTestcaseStatus() + "" + tcd.getTestcaseJSON());
+				}
+				System.out.println(
+						Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + Constants.endOfProcessText);
+				btnDownloadAttachments.setEnabled(true);
 			}
 		});
 		thread.start();
+	}
+
+	//
+	private void triggerBuild() {
+		String buildPath, fepName, notificationList = "";
+		if (Initializer.GUI.cbxFEP.getSelectedItem().toString().equals("base")) {
+			fepName = "";
+		} else {
+			fepName = Initializer.GUI.cbxFEP.getSelectedItem().toString();
+		}
+
+		buildPath = "\\\\" + Initializer.GUI.cbxBuildMachine.getSelectedItem().toString() + "\\queue\\master"
+				+ Initializer.GUI.txtBaseVersion.getText();
+
+		for (String currentString : cbxNotificationList.getSelectedItems()) {
+			notificationList = notificationList + " " + currentString;
+		}
+
+		String content = "#customer-list buypass\n#notify " + notificationList + "\n#component \\isdDist\\sc" + fepName
+				+ "\n#destinations \\\\" + Initializer.GUI.cbxAutomationMachines.getSelectedItem().toString()
+				+ "/CICD/Builds";
+		System.out.println(buildPath);
+		System.out.println(content);
+		Initializer.fm.createTextFile(content, buildPath);
 	}
 }

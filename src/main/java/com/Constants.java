@@ -17,7 +17,7 @@ public final class Constants {
 	public final static String tLogRulesFileNamePrefix = "TLOG-Rule[.]*";
 	public final static String testsuiteFileNamePrefix = "-TC-";
 	public final static String defaultPATSinitFileName = "PATSExecution";
-	public final static String defaultResultReportName = "Report-";
+	public final static String defaultResultReportName = "PATS-Execution-Summary-Report.html";
 	//Path where files will be saved
 	public final static String defaultReceiptFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipts";
 	public final static String defaultReceiptRulesFilesPath = "C:\\automnTool-V4\\automn\\AutomationInput\\ReferenceFiles\\Receipt-Rules";

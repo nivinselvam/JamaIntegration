@@ -19,15 +19,12 @@ public class WebServiceProcessor {
 	String responseString;
 	ResponseBody body;
 	Response response;
-	String testplan, status, itemName, fileName, testplanName, testCycleName, attachmentName, attachmentContent, consolidatedTestCases;
+	String testplan, status, itemName, fileName, testplanName, testCycleName, attachmentName, attachmentContent,
+			consolidatedTestCases;
 	Pattern pattern;
 	Matcher match;
 
-	public WebServiceProcessor() {
-
-	}
-
-	public void putData() throws ParseException {
+	public void updateTestResultsInJAMA() throws ParseException {
 		RestAssured.baseURI = baseURL;
 		RequestSpecification requestSpecification = RestAssured.given();
 		requestSpecification.header("Content-Type", "application/json");
@@ -195,33 +192,9 @@ public class WebServiceProcessor {
 		return fileName;
 	}
 
-	public String getTestcaseFromTestPlan(String testplan) {
-		int downloadedTcCount = 0;
-		status = Constants.invalidTestPlanID;
-		try {
-			for (String currentTestCycle : getTestCyclesFromTestPlan(testplan)) {
-				status = Constants.webservicesError;
-				for (String currentTestCase : getTestCasesFromTestCycle(currentTestCycle)) {
-					for (String currentAttachment : getAttachmentsInTestCase(currentTestCase)) {
-						attachmentContent = getAttachmentContent(currentAttachment);
-						consolidatedTestCases = consolidatedTestCases + "\n\n" + attachmentContent;
-						downloadedTcCount = downloadedTcCount + 1;
-						Initializer.GUI.lblDownloadedTcValue.setText(String.valueOf(downloadedTcCount));
-					}
-				}
-			}
-			return consolidatedTestCases;
-		} catch (Exception e) {
-			if (e.toString().contains("java.net.UnknownHostException")) {
-				return Constants.jamaConnectivityIssue;
-			} else {
-				return status;
-			}
+	public String getTestcaseDetails(String testCaseID) {
+		response = RestAssured.get(baseURL + "abstractitems/" + testCaseID);
+		return response.getBody().asString();
+	}	
 
-		}
-
-	}
-
-
-	
 }
