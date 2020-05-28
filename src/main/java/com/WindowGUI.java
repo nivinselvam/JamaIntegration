@@ -2,13 +2,10 @@ package com;
 
 import javax.swing.JFrame;
 import javax.swing.ButtonGroup;
-import javax.swing.ComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
@@ -22,7 +19,9 @@ import javax.swing.JTextArea;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.BadLocationException;
 
-import org.springframework.beans.factory.config.CustomEditorConfigurer;
+import org.json.simple.parser.ParseException;
+
+import groovy.lang.Newify;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -75,10 +74,16 @@ public class WindowGUI {
 	private JComboBox cbxAutomationMachines;
 	private InetAddress systemDetails;
 	private CustomComboCheckBox cbxNotificationList;
+	private JTextField txtEnterAutomationMachineName;
+	private JCheckBox chckbxEnterMachineName;
+	private JTextField txtAddMailID;
+	private JButton btnAddToList;
+	private String mailID;
+	private Vector vector;
+	private JButton btnRemoveFromList;
 
 	/**
 	 * Create the application.
-	 * 
 	 */
 	public WindowGUI() {
 		initialize();
@@ -526,90 +531,133 @@ public class WindowGUI {
 		JLabel lblMailId = new JLabel("Mail id");
 		lblMailId.setFont(new Font("Tahoma", Font.PLAIN, 13));
 
-		Vector vector = new Vector();
-		vector.add(new JCheckBox("nivins1", false));
+		vector = new Vector();
 		vector.add(new JCheckBox("rania1", false));
 		vector.add(new JCheckBox("jenishp1", false));
 		vector.add(new JCheckBox("anbarasang1", false));
 		vector.add(new JCheckBox("petroauto", false));
-		// JComboBox cbxNotificationList = new JComboBox();
+		vector.add(new JCheckBox("nivins1", false));
+		//JComboBox cbxNotificationList = new JComboBox(vector);
 		cbxNotificationList = new CustomComboCheckBox(vector);
 
 		JLabel lblverifonecom = new JLabel("@verifone.com");
+
+		txtEnterAutomationMachineName = new JTextField();
+		txtEnterAutomationMachineName.setEnabled(false);
+		txtEnterAutomationMachineName.setColumns(10);
+
+		chckbxEnterMachineName = new JCheckBox("Enter machine name");
+
+		txtAddMailID = new JTextField();
+		txtAddMailID.setColumns(10);
+
+		btnAddToList = new JButton("Add to list");
+
+		btnRemoveFromList = new JButton("Remove from list");
+		
 		GroupLayout gl_pnTriggerBuild = new GroupLayout(pnTriggerBuild);
 		gl_pnTriggerBuild.setHorizontalGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnTriggerBuild.createSequentialGroup().addContainerGap().addGroup(gl_pnTriggerBuild
-						.createParallelGroup(Alignment.LEADING).addComponent(lblBuildMachine)
-						.addComponent(lblAutomationMachine).addComponent(lblBuildDetails)
-						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblFep).addGap(58)
-								.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING, false)
-										.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(rdbtnBaseBuild)
-												.addGap(38).addComponent(rdbtnCrBuild))
-										.addComponent(cbxFEP, GroupLayout.PREFERRED_SIZE, 423,
-												GroupLayout.PREFERRED_SIZE)))
-						.addComponent(lblType)
-						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblVersion).addGap(30)
-								.addComponent(txtBaseVersion, 423, 423, 423))
-						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblCrNumber).addGap(12)
-								.addComponent(txtCRnumber, GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
-						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(chckbxAutoTriggerBuild)
-								.addPreferredGap(ComponentPlacement.RELATED, 36,
-										Short.MAX_VALUE)
-								.addComponent(btnTriggerBuild))
-						.addComponent(lblNotificationList)
-						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGroup(gl_pnTriggerBuild
-								.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblMailId).addGap(42)
-										.addComponent(cbxNotificationList, GroupLayout.PREFERRED_SIZE, 265,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(0, 0, Short.MAX_VALUE))
-								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblName_1).addGap(46)
-										.addComponent(cbxAutomationMachines, GroupLayout.PREFERRED_SIZE, 266,
-												GroupLayout.PREFERRED_SIZE)
-										.addGap(0, 0, Short.MAX_VALUE))
-								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblBuildMachineName)
-										.addGap(48).addComponent(cbxBuildMachine, GroupLayout.PREFERRED_SIZE, 264,
-												GroupLayout.PREFERRED_SIZE)))
-								.addGap(18)
-								.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
-										.addComponent(lblverifonecom).addComponent(btnBuildsRunningInfo))))
-						.addContainerGap()));
-		gl_pnTriggerBuild.setVerticalGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnTriggerBuild.createSequentialGroup().addContainerGap().addComponent(lblBuildMachine)
-						.addGap(16)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblBuildMachineName)
-								.addComponent(cbxBuildMachine, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+				.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGroup(gl_pnTriggerBuild
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(12).addComponent(lblBuildMachine))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(12).addComponent(lblBuildMachineName)
+								.addGap(48)
+								.addComponent(cbxBuildMachine, GroupLayout.PREFERRED_SIZE, 264,
 										GroupLayout.PREFERRED_SIZE)
+								.addGap(20).addComponent(btnBuildsRunningInfo))
+						.addGroup(
+								gl_pnTriggerBuild.createSequentialGroup().addGap(12).addComponent(lblAutomationMachine))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(12).addComponent(lblName_1)
+								.addGap(46).addComponent(cbxAutomationMachines, GroupLayout.PREFERRED_SIZE, 416,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(91)
+								.addComponent(txtEnterAutomationMachineName, GroupLayout.PREFERRED_SIZE, 266,
+										GroupLayout.PREFERRED_SIZE)
+								.addGap(3).addComponent(chckbxEnterMachineName))
+						.addGroup(
+								gl_pnTriggerBuild.createSequentialGroup().addGap(12).addComponent(lblNotificationList))
+						.addGroup(
+								gl_pnTriggerBuild.createSequentialGroup().addGap(12).addComponent(lblMailId).addGap(42)
+										.addComponent(cbxNotificationList, GroupLayout.PREFERRED_SIZE, 325,
+												GroupLayout.PREFERRED_SIZE)
+										.addGap(5).addComponent(lblverifonecom))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(91).addComponent(txtAddMailID,
+								GroupLayout.PREFERRED_SIZE, 416, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(91)
+								.addComponent(btnAddToList, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE)
+								.addGap(27).addComponent(btnRemoveFromList, GroupLayout.PREFERRED_SIZE, 198,
+										GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_pnTriggerBuild.createSequentialGroup().addContainerGap().addGroup(gl_pnTriggerBuild
+								.createParallelGroup(Alignment.LEADING).addComponent(lblBuildDetails)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblFep).addGap(58)
+										.addComponent(cbxFEP, GroupLayout.PREFERRED_SIZE, 423,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblType).addGap(48)
+										.addComponent(rdbtnBaseBuild).addGap(38).addComponent(rdbtnCrBuild))
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblVersion).addGap(30)
+										.addComponent(txtBaseVersion, GroupLayout.PREFERRED_SIZE, 423,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(lblCrNumber).addGap(12)
+										.addComponent(txtCRnumber, GroupLayout.PREFERRED_SIZE, 420,
+												GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addComponent(chckbxAutoTriggerBuild)
+										.addGap(36).addComponent(btnTriggerBuild)))))
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		gl_pnTriggerBuild.setVerticalGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(13).addComponent(lblBuildMachine).addGap(16)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(4)
+										.addComponent(lblBuildMachineName))
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(1).addComponent(
+										cbxBuildMachine, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE))
 								.addComponent(btnBuildsRunningInfo))
 						.addGap(18).addComponent(lblAutomationMachine).addGap(18)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblName_1)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(3).addComponent(lblName_1))
 								.addComponent(cbxAutomationMachines, GroupLayout.PREFERRED_SIZE,
 										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(6)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(1).addComponent(
+										txtEnterAutomationMachineName, GroupLayout.PREFERRED_SIZE,
+										GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addComponent(chckbxEnterMachineName))
 						.addGap(18).addComponent(lblNotificationList).addGap(18)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblMailId)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(3).addComponent(lblMailId))
 								.addComponent(cbxNotificationList, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblverifonecom))
-						.addGap(23).addComponent(lblBuildDetails).addGap(18)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblFep)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(3)
+										.addComponent(lblverifonecom)))
+						.addGap(7)
+						.addComponent(txtAddMailID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(7)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING).addComponent(btnAddToList)
+								.addComponent(btnRemoveFromList))
+						.addGap(18).addComponent(lblBuildDetails).addGap(18)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(3).addComponent(lblFep))
 								.addComponent(cbxFEP, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE))
 						.addGap(18)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblType)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(4).addComponent(lblType))
 								.addComponent(rdbtnBaseBuild).addComponent(rdbtnCrBuild))
 						.addGap(18)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblVersion)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(3).addComponent(lblVersion))
 								.addComponent(txtBaseVersion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE))
 						.addGap(18)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE).addComponent(lblCrNumber)
+						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnTriggerBuild.createSequentialGroup().addGap(3).addComponent(lblCrNumber))
 								.addComponent(txtCRnumber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										GroupLayout.PREFERRED_SIZE))
-						.addGap(27)
-						.addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.BASELINE)
+						.addGap(27).addGroup(gl_pnTriggerBuild.createParallelGroup(Alignment.LEADING)
 								.addComponent(chckbxAutoTriggerBuild).addComponent(btnTriggerBuild))
-						.addContainerGap(150, Short.MAX_VALUE)));
+						.addGap(63)));
 		pnTriggerBuild.setLayout(gl_pnTriggerBuild);
 
 		JPanel panelLogs = new JPanel();
@@ -642,6 +690,9 @@ public class WindowGUI {
 		txtAreaLogs.setLineWrap(true);
 		PrintStream printStream = new PrintStream(new CustomOutputStream(txtAreaLogs));
 		panelLogs.setLayout(gl_panelLogs);
+		// PrintStream standardout = System.out;
+		System.setOut(printStream);
+		System.setErr(printStream);
 
 		btnClearLogs.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -689,9 +740,42 @@ public class WindowGUI {
 
 		});
 
-		// PrintStream standardout = System.out;
-		System.setOut(printStream);
-		System.setErr(printStream);
+		chckbxEnterMachineName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxEnterMachineName.isSelected()) {
+					cbxAutomationMachines.setEnabled(false);
+					txtEnterAutomationMachineName.setEnabled(true);
+				} else {
+					cbxAutomationMachines.setEnabled(true);
+					txtEnterAutomationMachineName.setEnabled(false);
+				}
+			}
+		});
+
+		btnAddToList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mailID = txtAddMailID.getText();
+				if (mailID.equals("")) {
+					JOptionPane.showMessageDialog(null, "Empty mail id cannot be added");
+				} else {
+					vector.add(new JCheckBox(mailID, false));
+					cbxNotificationList.repaint();
+					
+				}
+			}
+		});
+		
+		btnRemoveFromList.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mailID = txtAddMailID.getText();
+				if(vector.contains(mailID)) {
+					vector.remove(mailID);
+					cbxNotificationList.repaint();
+				}else {
+					JOptionPane.showMessageDialog(null, "Entered mail id is not available.");
+				}
+			}
+		});
 
 		frmAttDriver.getContentPane().setLayout(groupLayout);
 
@@ -752,7 +836,13 @@ public class WindowGUI {
 				for (TestCaseDetails tcd : Initializer.testcaseDetails) {
 					System.out.println(tcd.getTestcaseID() + "-" + tcd.getTestcaseDocumentKey() + "-"
 							+ tcd.getTestcaseStatus() + "" + tcd.getTestcaseJSON());
+					try {
+						Initializer.wsp.updateTestResultsInJAMA(tcd.getTestcaseJSON(), tcd.getTestcaseStatus());
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 				}
+
 				System.out.println(
 						Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + Constants.endOfProcessText);
 				btnDownloadAttachments.setEnabled(true);
@@ -763,7 +853,7 @@ public class WindowGUI {
 
 	//
 	private void triggerBuild() {
-		String buildPath, fepName, notificationList = "";
+		String buildPath, fepName, notificationList = "", automationMachineName;
 		if (Initializer.GUI.cbxFEP.getSelectedItem().toString().equals("base")) {
 			fepName = "";
 		} else {
@@ -773,13 +863,18 @@ public class WindowGUI {
 		buildPath = "\\\\" + Initializer.GUI.cbxBuildMachine.getSelectedItem().toString() + "\\queue\\master"
 				+ Initializer.GUI.txtBaseVersion.getText();
 
+		if (chckbxEnterMachineName.isSelected()) {
+			automationMachineName = txtEnterAutomationMachineName.getText();
+		} else {
+			automationMachineName = cbxAutomationMachines.getSelectedItem().toString();
+		}
+
 		for (String currentString : cbxNotificationList.getSelectedItems()) {
 			notificationList = notificationList + " " + currentString;
 		}
 
 		String content = "#customer-list buypass\n#notify " + notificationList + "\n#component \\isdDist\\sc" + fepName
-				+ "\n#destinations \\\\" + Initializer.GUI.cbxAutomationMachines.getSelectedItem().toString()
-				+ "/CICD/Builds";
+				+ "\n#destinations \\\\" + automationMachineName + "/CICD/Builds";
 		System.out.println(buildPath);
 		System.out.println(content);
 		Initializer.fm.createTextFile(content, buildPath);

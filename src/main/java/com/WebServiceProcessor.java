@@ -24,16 +24,6 @@ public class WebServiceProcessor {
 	Pattern pattern;
 	Matcher match;
 
-	public void updateTestResultsInJAMA() throws ParseException {
-		RestAssured.baseURI = baseURL;
-		RequestSpecification requestSpecification = RestAssured.given();
-		requestSpecification.header("Content-Type", "application/json");
-		requestSpecification.body(responseString);
-		response = requestSpecification.put(request);
-		System.out
-				.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + response.getStatusCode());
-	}
-
 	/*
 	 * This method is used to retrieve the test cycles of a particular test plan
 	 * This takes test plan id as input argument and returns the list of test cycles
@@ -181,7 +171,6 @@ public class WebServiceProcessor {
 	public String getAttachmentFileNameWithoutWebService(String response) {
 		fileName = "";
 		pattern = Pattern.compile("\"fileName\":\"[\\w|\\s|-]*");
-		String resp = body.asString();
 		match = pattern.matcher(body.asString());
 		if (match.find()) {
 			fileName = match.group().substring(12);
@@ -194,7 +183,33 @@ public class WebServiceProcessor {
 
 	public String getTestcaseDetails(String testCaseID) {
 		response = RestAssured.get(baseURL + "abstractitems/" + testCaseID);
-		return response.getBody().asString();
-	}	
+		body = response.getBody();
+		return body.asString();
+	}
+
+	/*
+	 * This method is used to update back the results to the JAMA portal.
+	 */
+	public void updateTestResultsInJAMA(String testCaseJSON, String testCaseStatus) throws ParseException {
+		String result = testCaseStatus;
+		if(result.contains("ed")) {
+			result = result.toUpperCase();
+		}else {
+			result = (result+"ed").toUpperCase();
+		}
+		pattern = Pattern.compile("\"testCaseStatus\":\"[\\w]+\"");
+		match = pattern.matcher(testCaseJSON);
+		if(match.find()) {
+			status = match.group();
+		}		
+		RestAssured.baseURI = baseURL;
+		RequestSpecification requestSpecification = RestAssured.given();
+		requestSpecification.header("Content-Type", "application/json");
+		responseString = testCaseJSON.replace(status, "\"testCaseStatus\":\""+result+"\"");
+		requestSpecification.body(responseString);
+		response = requestSpecification.put(request);
+		System.out
+				.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + response.getStatusCode());
+	}
 
 }

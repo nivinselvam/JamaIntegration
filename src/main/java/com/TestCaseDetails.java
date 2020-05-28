@@ -13,7 +13,7 @@ public class TestCaseDetails implements Comparable<TestCaseDetails> {
 	public TestCaseDetails(String testcaseID, String testcaseDocumentKey, String JSON, String testcaseStatus) {
 		this.testcaseID = testcaseID;
 		this.testcaseDocumentKey = testcaseDocumentKey;
-		this.testcaseJSON = testcaseJSON;
+		this.testcaseJSON = JSON;
 		this.testcaseStatus = testcaseStatus;
 	}
 
