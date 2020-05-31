@@ -2,6 +2,7 @@ package com;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,7 +11,7 @@ import javax.swing.JOptionPane;
 import io.restassured.RestAssured;
 
 public class AttachmentDownloader {
-	String status, attachmentContent, attachmentName, consolidatedTestCases = "", fileName, testcaseJSON;
+	String status, attachmentContent, attachmentName, consolidatedTestCases = "", fileName, testrunJSON, testcaseDocumentKey;
 	Pattern pattern;
 	Matcher matcher;
 	boolean valid;
@@ -22,10 +23,11 @@ public class AttachmentDownloader {
 		try {
 			for (String currentTestCycle : Initializer.wsp.getTestCyclesFromTestPlan(testplan)) {
 				status = Constants.webservicesError;
-				for (String currentTestCase : Initializer.wsp.getTestCasesFromTestCycle(currentTestCycle)) {
-					testcaseJSON = Initializer.wsp.getTestcaseDetails(currentTestCase);
-					Initializer.testcaseDetails.add(new TestCaseDetails(currentTestCase,getTestcaseDocumentKey(testcaseJSON) ,testcaseJSON, ""));
-					for (String currentAttachment : Initializer.wsp.getAttachmentsInTestCase(currentTestCase)) {
+				for (Map.Entry<String, String> currentEntry : Initializer.wsp.getTestCasesFromTestCycle(currentTestCycle).entrySet()) {
+					testrunJSON = Initializer.wsp.getTestrunJSON(currentEntry.getValue());
+					testcaseDocumentKey = getTestcaseDocumentKey(Initializer.wsp.getTestcaseDetails(currentEntry.getKey()));
+					Initializer.testcaseDetails.add(new TestCaseDetails(currentEntry.getValue(),testcaseDocumentKey ,testrunJSON, ""));
+					for (String currentAttachment : Initializer.wsp.getAttachmentsInTestCase(currentEntry.getKey())) {
 						attachmentName = Initializer.wsp.getAttachmentFileName(currentAttachment);
 						attachmentContent = Initializer.wsp.getAttachmentContent(currentAttachment);
 						if (attachmentName.contains(Constants.testsuiteFileNamePrefix)) {

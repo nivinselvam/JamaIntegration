@@ -127,6 +127,7 @@ public class WindowGUI {
 		// lost
 		// formatter.setCommitsOnValidEdit(true);
 		txtTestPlanID = new JFormattedTextField();
+		txtTestPlanID.setText("11182991");
 		txtTestPlanID.setBounds(119, 59, 201, 22);
 		panelMain.add(txtTestPlanID);
 

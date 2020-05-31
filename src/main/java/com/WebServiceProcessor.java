@@ -1,11 +1,11 @@
 package com;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.json.simple.parser.ParseException;
-
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
@@ -15,7 +15,8 @@ public class WebServiceProcessor {
 
 	static String baseURL = "https://" + Constants.username + ":" + Constants.password
 			+ "@jama.verifone.com/contour/rest/latest/";
-	String request = "/testruns/11183131";
+	String request;
+	Map<String, String> testcaseAndTestrunMap;
 	String responseString;
 	ResponseBody body;
 	Response response;
@@ -60,7 +61,36 @@ public class WebServiceProcessor {
 	 * This takes test cycle id as input argument and returns the list of test cases
 	 * as String array
 	 */
-	public String[] getTestCasesFromTestCycle(String testCycleID) {
+//	public String[] getTestCasesFromTestCycle(String testCycleID) {
+//		int testCaseCount = 0, i = 0;
+//		response = RestAssured.get(baseURL + "testcycles/" + testCycleID + "/testruns");
+//		body = response.getBody();
+//		pattern = Pattern.compile("\"totalResults\":\\d{1,}");
+//		match = pattern.matcher(body.asString());
+//		if (match.find()) {
+//			testCaseCount = Integer.parseInt(match.group().substring(15));
+//		}
+//		Initializer.GUI.lblAvailableTcValue.setText(String.valueOf(testCaseCount));
+//		String[] testCaseIDs = new String[testCaseCount];
+//		pattern = Pattern.compile("\"testCase\":\\w*");
+//		match = pattern.matcher(body.asString());
+//		while (match.find()) {
+//			testCaseIDs[i] = match.group().substring(11);
+//			i++;
+//		}
+//		if (testCaseCount == 0) {
+//			return null;
+//		} else {
+//			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
+//					+ "Test cases assigned to test Cycle " + testCycleID + ": " + testCaseCount);
+//			return testCaseIDs;
+//		}
+//
+//	}
+
+	public Map<String, String> getTestCasesFromTestCycle(String testCycleID) {
+		// Test case id's will be the key and test run id's will be the value;
+		testcaseAndTestrunMap = new HashMap<String, String>();
 		int testCaseCount = 0, i = 0;
 		response = RestAssured.get(baseURL + "testcycles/" + testCycleID + "/testruns");
 		body = response.getBody();
@@ -70,19 +100,32 @@ public class WebServiceProcessor {
 			testCaseCount = Integer.parseInt(match.group().substring(15));
 		}
 		Initializer.GUI.lblAvailableTcValue.setText(String.valueOf(testCaseCount));
-		String[] testCaseIDs = new String[testCaseCount];
+
+		String[] testcaseIDs = new String[testCaseCount];
+		String[] testcaseRunIDs = new String[testCaseCount];
+
 		pattern = Pattern.compile("\"testCase\":\\w*");
 		match = pattern.matcher(body.asString());
 		while (match.find()) {
-			testCaseIDs[i] = match.group().substring(11);
+			testcaseIDs[i] = match.group().substring(11);
 			i++;
+		}
+		i = 0;
+		pattern = Pattern.compile("\"id\":[\\d]+");
+		match = pattern.matcher(body.asString());
+		while (match.find()) {
+			testcaseRunIDs[i] = match.group().substring(5);
+			i++;
+		}
+		for (int j = 0; j < testCaseCount; j++) {
+			testcaseAndTestrunMap.put(testcaseIDs[j], testcaseRunIDs[j]);
 		}
 		if (testCaseCount == 0) {
 			return null;
 		} else {
 			System.out.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime())
 					+ "Test cases assigned to test Cycle " + testCycleID + ": " + testCaseCount);
-			return testCaseIDs;
+			return testcaseAndTestrunMap;
 		}
 
 	}
@@ -181,8 +224,18 @@ public class WebServiceProcessor {
 		return fileName;
 	}
 
-	public String getTestcaseDetails(String testCaseID) {
-		response = RestAssured.get(baseURL + "abstractitems/" + testCaseID);
+	/*
+	 * This method is used to fetch the JSON details of the test run. This returns
+	 * the JSON details without the meta data
+	 */
+	public String getTestrunJSON(String testrunID) {
+		response = RestAssured.get(baseURL + "abstractitems/" + testrunID);
+		body = response.getBody();
+		return body.asString();
+	}
+
+	public String getTestcaseDetails(String testcaseID) {
+		response = RestAssured.get(baseURL + "abstractitems/" + testcaseID);
 		body = response.getBody();
 		return body.asString();
 	}
@@ -191,25 +244,42 @@ public class WebServiceProcessor {
 	 * This method is used to update back the results to the JAMA portal.
 	 */
 	public void updateTestResultsInJAMA(String testCaseJSON, String testCaseStatus) throws ParseException {
-		String result = testCaseStatus;
-		if(result.contains("ed")) {
+		String result = testCaseStatus, id = "";
+		if (result.contains("ed")) {
 			result = result.toUpperCase();
-		}else {
-			result = (result+"ed").toUpperCase();
+		} else {
+			result = (result + "ed").toUpperCase();
 		}
-		pattern = Pattern.compile("\"testCaseStatus\":\"[\\w]+\"");
+		// To grep the test case details without meta data
+		pattern = Pattern.compile("\\{\"id\":.*}");
 		match = pattern.matcher(testCaseJSON);
-		if(match.find()) {
+		if (match.find()) {
+			responseString = match.group();
+		}
+		
+		//To update the test step status as execution result in the JSON
+		pattern = Pattern.compile("\"status\":\"[\\w]+\"");
+		match = pattern.matcher(responseString);
+		if (match.find()) {
 			status = match.group();
-		}		
+			responseString = responseString.replaceAll(status, "\"status\":\"" + result + "\"");
+			
+		}
+
+		//To fectch the id from the JSON string
+		pattern = Pattern.compile("\"id\":[\\d]+");
+		match = pattern.matcher(responseString);
+		if (match.find()) {
+			id = match.group().substring(5);			
+		}
+		
 		RestAssured.baseURI = baseURL;
 		RequestSpecification requestSpecification = RestAssured.given();
 		requestSpecification.header("Content-Type", "application/json");
-		responseString = testCaseJSON.replace(status, "\"testCaseStatus\":\""+result+"\"");
 		requestSpecification.body(responseString);
-		response = requestSpecification.put(request);
+		response = requestSpecification.put(baseURL+"testruns/"+id);
 		System.out
-				.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) + response.getStatusCode());
+				.println(Constants.logsDateFormat.format(Calendar.getInstance().getTime()) +"Response received from the JAMA server - " +response.getStatusCode());
 	}
 
 }

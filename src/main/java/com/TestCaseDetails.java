@@ -4,25 +4,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestCaseDetails implements Comparable<TestCaseDetails> {
-	private String testcaseID, testcaseDocumentKey, testcaseJSON, testcaseStatus;
+	private String testrunID, testcaseDocumentKey, testrunJSON, testrunStatus;
 
 	private Pattern pattern;
 	private Matcher match;
 	private int greppedKey1, greppedKey2;
 
-	public TestCaseDetails(String testcaseID, String testcaseDocumentKey, String JSON, String testcaseStatus) {
-		this.testcaseID = testcaseID;
+	public TestCaseDetails(String testrunID, String testcaseDocumentKey, String JSON, String testrunStatus) {
+		this.testrunID = testrunID;
 		this.testcaseDocumentKey = testcaseDocumentKey;
-		this.testcaseJSON = JSON;
-		this.testcaseStatus = testcaseStatus;
+		this.testrunJSON = JSON;
+		this.testrunStatus = testrunStatus;
 	}
 
 	public String getTestcaseID() {
-		return testcaseID;
+		return testrunID;
 	}
 
 	public void setTestcaseID(String testcaseID) {
-		this.testcaseID = testcaseID;
+		this.testrunID = testcaseID;
 	}
 
 	public String getTestcaseDocumentKey() {
@@ -34,19 +34,19 @@ public class TestCaseDetails implements Comparable<TestCaseDetails> {
 	}
 	
 	public String getTestcaseJSON() {
-		return testcaseJSON;
+		return testrunJSON;
 	}
 	
 	public void setTestcaseJSON(String testcaseJSON) {
-		this.testcaseJSON = testcaseJSON;
+		this.testrunJSON = testcaseJSON;
 	}
 
 	public String getTestcaseStatus() {
-		return testcaseStatus;
+		return testrunStatus;
 	}
 
 	public void setTestcaseStatus(String testcaseStatus) {
-		this.testcaseStatus = testcaseStatus;
+		this.testrunStatus = testcaseStatus;
 	}
 
 	public int compareTo(TestCaseDetails tc) {
